@@ -268,7 +268,6 @@ Public Class MainForm
             UpdateUIStrings()
             
             ' F1 tuşu ile yardım
-            Me.KeyPreview = True
             AddHandler Me.KeyDown, AddressOf MainForm_KeyDown
             If mnuHelpViewer IsNot Nothing Then
                 AddHandler mnuHelpViewer.Click, AddressOf MnuHelpViewer_Click
@@ -302,11 +301,6 @@ Public Class MainForm
     ''' Kısayol tuşları: F11=Ayarlar, F12=Hata Logları
     ''' </summary>
     Private Sub MainForm_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
-        ' F1 tuşu ile yardım
-        If e.KeyCode = Keys.F1 Then
-            e.Handled = True
-            ShowHelp(GetContextHelpTopic())
-        End If
         Select Case e.KeyCode
             Case Keys.F1
                 ShowHelp(GetContextHelpTopic())
