@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Başlarken - CarCanReader</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #1e1e2e;
+            color: #ffffff;
+            padding: 30px;
+            line-height: 1.8;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #3498db;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #2ecc71;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        h3 {
+            color: #f39c12;
+            margin-top: 30px;
+        }
+        p {
+            margin: 15px 0;
+        }
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+        li {
+            margin: 8px 0;
+        }
+        code {
+            background: #2d2d3e;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Consolas', monospace;
+            color: #e74c3c;
+        }
+        .highlight {
+            background: #34495e;
+            padding: 15px;
+            border-left: 4px solid #3498db;
+            margin: 20px 0;
+        }
+        .warning {
+            background: #8b4513;
+            padding: 15px;
+            border-left: 4px solid #f39c12;
+            margin: 20px 0;
+        }
+        .info {
+            background: #1a5490;
+            padding: 15px;
+            border-left: 4px solid #3498db;
+            margin: 20px 0;
+        }
+        img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 20px 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        .img-caption {
+            text-align: center;
+            color: #95a5a6;
+            font-size: 0.9em;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #34495e;
+        }
+        th {
+            background: #2c3e50;
+            color: #3498db;
+        }
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 CarCanReader'a Başlarken</h1>
+    
+    <p>CarCanReader, araçlarınızın CAN bus sistemine bağlanarak OBD-II verilerini okumanızı, hata kodlarını görüntülemenizi ve araç sistemlerini yönetmenizi sağlayan profesyonel bir teşhis yazılımıdır.</p>
+
+    <h2>📖 CarCanReader Nedir?</h2>
+    
+    <p>CarCanReader, modern araçların CAN (Controller Area Network) bus sistemine bağlanarak:</p>
+    <ul>
+        <li><strong>Canlı veri okuma:</strong> RPM, hız, sıcaklık, yakıt seviyesi gibi gerçek zamanlı sensör verileri</li>
+        <li><strong>Hata kodu yönetimi:</strong> DTC (Diagnostic Trouble Code) okuma, görüntüleme ve silme</li>
+        <li><strong>Modül kodlama:</strong> Araç modüllerini kodlama ve yapılandırma</li>
+        <li><strong>CAN analizi:</strong> CAN mesajlarını analiz etme ve öğrenme</li>
+        <li><strong>Veri kaydetme:</strong> Okunan verileri CSV formatında kaydetme</li>
+    </ul>
+
+    <div class="info">
+        <strong>💡 İpucu:</strong> CarCanReader, hem amatör hem de profesyonel kullanıcılar için tasarlanmıştır. Basit arayüzü sayesinde kolayca kullanılabilir.
+    </div>
+
+    <h2>🔌 Desteklenen Adaptörler</h2>
+    
+    <p>CarCanReader aşağıdaki CAN adaptörleri ile uyumludur:</p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Adaptör</th>
+                <th>Protokol</th>
+                <th>Bağlantı</th>
+                <th>Notlar</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>CANable</strong></td>
+                <td>SLCAN</td>
+                <td>USB</td>
+                <td>Önerilen - Otomatik algılama</td>
+            </tr>
+            <tr>
+                <td>ELM327</td>
+                <td>OBD-II</td>
+                <td>USB/Bluetooth</td>
+                <td>Bluetooth için ek yapılandırma gerekebilir</td>
+            </tr>
+            <tr>
+                <td>OBDLink</td>
+                <td>OBD-II</td>
+                <td>USB</td>
+                <td>Yaygın kullanılan adaptör</td>
+            </tr>
+            <tr>
+                <td>Diğer SLCAN uyumlu</td>
+                <td>SLCAN</td>
+                <td>USB</td>
+                <td>Firmware güncellemesi gerekebilir</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="highlight">
+        <strong>✅ Önerilen:</strong> CANable adaptörü kullanmanız önerilir çünkü:
+        <ul style="margin-top: 10px;">
+            <li>Otomatik algılanır</li>
+            <li>SLCAN protokolü ile tam uyumlu</li>
+            <li>Yüksek hızlı veri aktarımı</li>
+            <li>Açık kaynak ve güvenilir</li>
+        </ul>
+    </div>
+
+    <h2>💻 Sistem Gereksinimleri</h2>
+    
+    <h3>Donanım Gereksinimleri</h3>
+    <ul>
+        <li><strong>İşlemci:</strong> Intel Core i3 veya eşdeğer (minimum), Core i5 önerilir</li>
+        <li><strong>RAM:</strong> 4 GB (minimum), 8 GB önerilir</li>
+        <li><strong>Disk:</strong> 100 MB boş alan</li>
+        <li><strong>USB Port:</strong> USB 2.0 veya üzeri (adaptör için)</li>
+        <li><strong>CAN Adaptörü:</strong> Uyumlu bir CAN adaptörü (CANable önerilir)</li>
+    </ul>
+
+    <h3>Yazılım Gereksinimleri</h3>
+    <ul>
+        <li><strong>İşletim Sistemi:</strong> Windows 7 SP1, Windows 8.1, Windows 10 veya Windows 11</li>
+        <li><strong>.NET Framework:</strong> 4.8 veya üzeri (otomatik yüklenir)</li>
+        <li><strong>USB Sürücüler:</strong> CAN adaptörünüz için gerekli sürücüler</li>
+    </ul>
+
+    <div class="warning">
+        <strong>⚠️ Önemli:</strong> Windows 7 kullanıyorsanız, .NET Framework 4.8'i manuel olarak yüklemeniz gerekebilir. <a href="https://dotnet.microsoft.com/download/dotnet-framework/net48" target="_blank">İndirme sayfası</a>
+    </div>
+
+    <h2>⚙️ Kurulum Adımları</h2>
+    
+    <h3>Adım 1: Yazılımı İndirin</h3>
+    <p>CarCanReader'ı resmi web sitesinden veya dağıtım paketinden indirin.</p>
+    
+    <div style="text-align: center; margin: 20px 0;">
+        <img src="images/installation.png" alt="Kurulum Ekranı" style="max-width: 600px;">
+        <p class="img-caption">Kurulum sihirbazı - Başlangıç ekranı</p>
+    </div>
+
+    <h3>Adım 2: Kurulumu Başlatın</h3>
+    <ol>
+        <li>İndirilen <code>CarCanReader_Setup.exe</code> dosyasına sağ tıklayın</li>
+        <li><strong>"Yönetici olarak çalıştır"</strong> seçeneğini seçin (gerekirse)</li>
+        <li>Kurulum sihirbazı açılacaktır</li>
+        <li><strong>"İleri"</strong> butonuna tıklayarak devam edin</li>
+    </ol>
+
+    <h3>Adım 3: Kurulum Seçenekleri</h3>
+    <ol>
+        <li><strong>Kurulum Konumu:</strong> Varsayılan konumu kullanabilir veya özel bir klasör seçebilirsiniz</li>
+        <li><strong>Başlat Menüsü:</strong> Başlat menüsünde kısayol oluşturulacaktır</li>
+        <li><strong>Masaüstü Kısayolu:</strong> İsterseniz masaüstü kısayolu oluşturabilirsiniz</li>
+        <li><strong>"Kur"</strong> butonuna tıklayın</li>
+    </ol>
+
+    <h3>Adım 4: Kurulum Tamamlandı</h3>
+    <p>Kurulum tamamlandığında:</p>
+    <ul>
+        <li>✅ "Kurulum tamamlandı" mesajı görünecektir</li>
+        <li>✅ <strong>"CarCanReader'ı Başlat"</strong> seçeneği ile uygulamayı açabilirsiniz</li>
+        <li>✅ Veya Başlat menüsünden <strong>"CarCanReader"</strong> seçeneğini kullanabilirsiniz</li>
+    </ul>
+
+    <div class="highlight">
+        <strong>💡 İlk Açılış:</strong> İlk açılışta uygulama otomatik olarak:
+        <ul style="margin-top: 10px;">
+            <li><code>data/</code> klasörünü oluşturur</li>
+            <li>Varsayılan konfigürasyon dosyalarını hazırlar</li>
+            <li>Bağlantı Wizard'ını gösterir (eğer bağlantı yoksa)</li>
+        </ul>
+    </div>
+
+    <h2>🔧 Adaptör Sürücüleri</h2>
+    
+    <h3>CANable Sürücüleri</h3>
+    <p>CANable adaptörü kullanıyorsanız:</p>
+    <ol>
+        <li>Adaptörü USB'ye takın</li>
+        <li>Windows otomatik olarak sürücüleri yükleyecektir</li>
+        <li>Eğer yüklemezse: <a href="https://github.com/candle-usb/candleLight_fw" target="_blank">CANable GitHub sayfasından</a> sürücüleri indirin</li>
+    </ol>
+
+    <h3>ELM327 Sürücüleri</h3>
+    <p>ELM327 adaptörü kullanıyorsanız:</p>
+    <ol>
+        <li>Adaptörünüzün üretici web sitesinden sürücüleri indirin</li>
+        <li>Adaptörü USB'ye takın</li>
+        <li>Sürücü kurulum sihirbazını takip edin</li>
+    </ol>
+
+    <div class="warning">
+        <strong>⚠️ Dikkat:</strong> İlk kurulumdan sonra CAN adaptörünüzü bağlamadan önce sürücülerin yüklü olduğundan emin olun. Aksi halde adaptör tanınmayabilir.
+    </div>
+
+    <h2>🎯 Sonraki Adımlar</h2>
+    
+    <p>Kurulum tamamlandıktan sonra:</p>
+    <ol>
+        <li><strong>Adaptörü Bağlayın:</strong> CAN adaptörünüzü bilgisayara USB ile bağlayın</li>
+        <li><strong>Uygulamayı Açın:</strong> CarCanReader'ı başlatın</li>
+        <li><strong>Bağlantı Kurun:</strong> <a href="connection.html">Bağlantı rehberi</a>ni takip ederek ilk bağlantıyı kurun</li>
+        <li><strong>Keşfedin:</strong> Dashboard, Teşhis ve diğer sekmeleri keşfedin</li>
+    </ol>
+
+    <h2>📚 İlgili Konular</h2>
+    <ul>
+        <li><a href="connection.html">🔌 Araç Bağlantısı</a> - İlk bağlantıyı kurma</li>
+        <li><a href="obd-reading.html">📊 OBD Veri Okuma</a> - Canlı veri okuma</li>
+        <li><a href="dtc-reading.html">🔍 Hata Kodu Okuma</a> - DTC okuma ve görüntüleme</li>
+        <li><a href="troubleshooting.html">🔧 Sorun Giderme</a> - Yaygın sorunlar ve çözümleri</li>
+    </ul>
+
+    <div class="info">
+        <strong>💡 Yardım:</strong> Herhangi bir sekmede <strong>F1</strong> tuşuna basarak ilgili yardım konusunu açabilirsiniz. Veya sağ üst köşedeki <strong>?</strong> butonunu kullanabilirsiniz.
+    </div>
+</body>
+</html>

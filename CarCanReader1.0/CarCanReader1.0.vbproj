@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{9AB385B8-8319-40E6-9A81-D8674E42DDF6}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <StartupObject>CarCanReader1._0.My.MyApplication</StartupObject>
+    <RootNamespace>CarCanReader1._0</RootNamespace>
+    <AssemblyName>CarCanReader1.0</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <MyType>WindowsForms</MyType>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>C:\Users\serca\OneDrive\Desktop\digi\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>CarCanReader1.0.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>CarCanReader1.0.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionExplicit>On</OptionExplicit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionCompare>Binary</OptionCompare>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionStrict>Off</OptionStrict>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionInfer>On</OptionInfer>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>D804C577721252462E19A73E8778A947B98C4A2A</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>CarCanReader1.0_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>false</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>false</SignManifests>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="itextsharp, Version=5.5.13.4, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13.4\lib\net461\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
+    </Reference>
+    <Reference Include="LiveCharts.WinForms, Version=0.9.7.1, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiveCharts.WinForms.0.9.7.1\lib\net45\LiveCharts.WinForms.dll</HintPath>
+    </Reference>
+    <Reference Include="LiveCharts.Wpf, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiveCharts.Wpf.0.9.7\lib\net45\LiveCharts.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="BouncyCastle.Cryptography, Version=2.4.0.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
+      <HintPath>..\packages\BouncyCastle.Cryptography.2.4.0\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Drawing" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Windows.Forms" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Xml.Linq" />
+    <Import Include="System.Threading.Tasks" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- MainForm -->
+    <Compile Include="MainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.vb">
+      <DependentUpon>MainForm.vb</DependentUpon>
+    </Compile>
+    <!-- Models -->
+    <Compile Include="Models\CANFrame.vb" />
+    <!-- Services -->
+    <Compile Include="Services\CANParser.vb" />
+    <Compile Include="Services\CANSender.vb" />
+    <Compile Include="Services\FilterManager.vb" />
+    <Compile Include="Services\DashboardManager.vb" />
+    <Compile Include="Services\LearningEngine.vb" />
+    <Compile Include="Services\CommandRepository.vb" />
+    <Compile Include="Services\CodingEngine.vb" />
+    <Compile Include="Services\LogAnalyzer.vb" />
+    <Compile Include="Services\AdvancedUdsEngine.vb" />
+    <Compile Include="Services\OBDService.vb" />
+    <!-- My Project -->
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Services\OnlineCarDbScraper.vb" />
+    <Compile Include="Services\VehicleProfileManager.vb" />
+    <Compile Include="Services\ThreadSafetyHelper.vb" />
+    <Compile Include="Services\SerialPortManager.vb" />
+    <Compile Include="Services\ErrorHandler.vb" />
+    <Compile Include="Services\ConfigManager.vb" />
+    <Compile Include="Services\DTCDatabase.vb" />
+    <Compile Include="Services\IsoTpHandler.vb" />
+    <Compile Include="Services\SessionRecorder.vb" />
+    <Compile Include="Forms\SessionPlayerForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Localization\LocalizationManager.vb" />
+    <Compile Include="Models\DTCInfo.vb" />
+    <Compile Include="Forms\ErrorLogViewer.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\IsoTpTestForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ConnectionWizard.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\HelpViewer.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\LiveChart.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Services\ProtocolDetector.vb" />
+    <Compile Include="Services\EcuScanner.vb" />
+    <Compile Include="Services\ReportGenerator.vb" />
+    <Compile Include="Forms\SettingsForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\DTCDetailForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\EcuScannerForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ReportForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\CarCanReader1.0.exe.config" />
+    <None Include="bin\Debug\data\commands.json" />
+    <None Include="bin\Debug\data\dtc\body.json" />
+    <None Include="bin\Debug\data\dtc\chassis.json" />
+    <None Include="bin\Debug\data\dtc\network.json" />
+    <None Include="bin\Debug\data\dtc\powertrain.json" />
+    <None Include="bin\Debug\data\vehicleProfiles.json" />
+    <None Include="CarCanReader1.0_TemporaryKey.pfx" />
+    <None Include="commands.json" />
+    <None Include="commands.json.bak" />
+    <None Include="data\commands.json" />
+    <None Include="data\vehicleProfiles.json" />
+    <None Include="docs\architecture.md" />
+    <None Include="docs\coding-system.md" />
+    <None Include="docs\commands-json-format.md" />
+    <None Include="docs\filter-system.md" />
+    <None Include="docs\learning-engine.md" />
+    <None Include="docs\services-overview.md" />
+    <None Include="docs\uds-capabilities.md" />
+    <Content Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </Content>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+    <None Include="project-spec.md" />
+    <None Include="publish\Application Files\CarCanReader1.0_1_0_0_0\CarCanReader1.0.application" />
+    <None Include="publish\Application Files\CarCanReader1.0_1_0_0_0\CarCanReader1.0.exe.config.deploy" />
+    <None Include="publish\Application Files\CarCanReader1.0_1_0_0_0\CarCanReader1.0.exe.deploy" />
+    <None Include="publish\Application Files\CarCanReader1.0_1_0_0_0\CarCanReader1.0.exe.manifest" />
+    <None Include="publish\Application Files\CarCanReader1.0_1_0_0_0\LiveCharts.dll.deploy" />
+    <None Include="publish\Application Files\CarCanReader1.0_1_0_0_0\LiveCharts.WinForms.dll.deploy" />
+    <None Include="publish\Application Files\CarCanReader1.0_1_0_0_0\LiveCharts.Wpf.dll.deploy" />
+    <None Include="publish\Application Files\CarCanReader1.0_1_0_0_0\Newtonsoft.Json.dll.deploy" />
+    <None Include="publish\CarCanReader1.0.application" />
+    <None Include="README.md" />
+    <None Include="ROADMAP-PROMPTS.md" />
+    <None Include="vehicleProfiles.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.8">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.8 %28x86 ve x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 </ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="bin\Debug\CarCanReader1.0.exe" />
+    <Content Include="bin\Debug\CarCanReader1.0.pdb" />
+    <Content Include="bin\Debug\CarCanReader1.0.xml" />
+    <Content Include="bin\Debug\LiveCharts.dll" />
+    <Content Include="bin\Debug\LiveCharts.pdb" />
+    <Content Include="bin\Debug\LiveCharts.WinForms.dll" />
+    <Content Include="bin\Debug\LiveCharts.WinForms.pdb" />
+    <Content Include="bin\Debug\LiveCharts.WinForms.xml" />
+    <Content Include="bin\Debug\LiveCharts.Wpf.dll" />
+    <Content Include="bin\Debug\LiveCharts.Wpf.pdb" />
+    <Content Include="bin\Debug\LiveCharts.Wpf.xml" />
+    <Content Include="bin\Debug\LiveCharts.xml" />
+    <Content Include="bin\Debug\Newtonsoft.Json.dll" />
+    <Content Include="bin\Debug\Newtonsoft.Json.xml" />
+    <Content Include="publish\setup.exe" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="CarCanReader1.0\Models\" />
+    <Folder Include="CarCanReader1.0\Services\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+</Project>

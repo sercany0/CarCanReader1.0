@@ -1,0 +1,81 @@
+{
+  "version": "1.0",
+  "topics": [
+    {
+      "category": "Başlarken",
+      "icon": "📘",
+      "items": [
+        {
+          "title": "Gereksinimler",
+          "file": "getting-started.html"
+        },
+        {
+          "title": "Kurulum",
+          "file": "getting-started.html#kurulum"
+        },
+        {
+          "title": "İlk Bağlantı",
+          "file": "connection.html"
+        }
+      ]
+    },
+    {
+      "category": "Temel Kullanım",
+      "icon": "📘",
+      "items": [
+        {
+          "title": "Araç Bağlantısı",
+          "file": "connection.html"
+        },
+        {
+          "title": "OBD Veri Okuma",
+          "file": "obd-reading.html"
+        },
+        {
+          "title": "Hata Kodu Okuma",
+          "file": "dtc-reading.html"
+        },
+        {
+          "title": "Hata Kodu Silme",
+          "file": "dtc-clearing.html"
+        }
+      ]
+    },
+    {
+      "category": "Gelişmiş Özellikler",
+      "icon": "📘",
+      "items": [
+        {
+          "title": "Coding Sistemi",
+          "file": "coding.html"
+        },
+        {
+          "title": "Learning Engine",
+          "file": "learning-engine.html"
+        },
+        {
+          "title": "CAN Analizi",
+          "file": "can-analysis.html"
+        }
+      ]
+    },
+    {
+      "category": "Sorun Giderme",
+      "icon": "📘",
+      "items": [
+        {
+          "title": "Bağlantı Sorunları",
+          "file": "troubleshooting.html#connection"
+        },
+        {
+          "title": "Veri Okuma Sorunları",
+          "file": "troubleshooting.html#data"
+        },
+        {
+          "title": "Sık Sorulan Sorular",
+          "file": "troubleshooting.html#faq"
+        }
+      ]
+    }
+  ]
+}

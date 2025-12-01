@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Araç Bağlantısı - CarCanReader</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #1e1e2e; color: #ffffff; padding: 30px; line-height: 1.8; max-width: 900px; margin: 0 auto; }
+        h1 { color: #3498db; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        h2 { color: #2ecc71; margin-top: 40px; margin-bottom: 20px; }
+        h3 { color: #f39c12; margin-top: 30px; }
+        p { margin: 15px 0; }
+        ul, ol { margin: 15px 0; padding-left: 30px; }
+        li { margin: 8px 0; }
+        code { background: #2d2d3e; padding: 3px 8px; border-radius: 4px; font-family: 'Consolas', monospace; color: #e74c3c; }
+        .highlight { background: #34495e; padding: 15px; border-left: 4px solid #3498db; margin: 20px 0; }
+        .warning { background: #8b4513; padding: 15px; border-left: 4px solid #f39c12; margin: 20px 0; }
+        .info { background: #1a5490; padding: 15px; border-left: 4px solid #3498db; margin: 20px 0; }
+        .success { background: #155724; padding: 15px; border-left: 4px solid #2ecc71; margin: 20px 0; }
+        img { max-width: 100%; border-radius: 8px; margin: 20px 0; box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+        .img-caption { text-align: center; color: #95a5a6; font-size: 0.9em; margin-top: 10px; margin-bottom: 20px; }
+        a { color: #3498db; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>🔌 Araç Bağlantısı</h1>
+    
+    <p>CarCanReader ile araç bağlantısı kurmak için birkaç yöntem mevcuttur. En kolay ve önerilen yöntem <strong>Bağlantı Wizard'ı</strong> kullanmaktır.</p>
+
+    <div style="text-align: center; margin: 20px 0;">
+        <img src="images/connection-wizard.png" alt="Bağlantı Wizard'ı" style="max-width: 700px;">
+        <p class="img-caption">Bağlantı Wizard'ı - Adım 1: Hoşgeldin ekranı</p>
+    </div>
+
+    <h2>📦 Adım 1: Adaptörü Bağlama</h2>
+    
+    <h3>Fiziksel Bağlantı</h3>
+    <ol>
+        <li><strong>CAN Adaptörünü Hazırlayın:</strong> Adaptörünüzü ve OBD-II kablosunu hazırlayın</li>
+        <li><strong>OBD-II Portunu Bulun:</strong> Genellikle sürücü koltuğunun altında, direksiyonun solunda bulunur</li>
+        <li><strong>Adaptörü Takın:</strong> OBD-II konektörünü aracın OBD-II portuna takın (16 pinli port)</li>
+        <li><strong>USB Bağlantısı:</strong> Adaptörün USB kablosunu bilgisayarınıza bağlayın</li>
+    </ol>
+
+    <div class="info">
+        <strong>💡 İpucu:</strong> OBD-II portu genellikle şu yerlerde bulunur:
+        <ul style="margin-top: 10px;">
+            <li>Sürücü koltuğunun altında (en yaygın)</li>
+            <li>Merkez konsolun altında</li>
+            <li>Glove box (torpido gözü) içinde</li>
+            <li>Motor kaputunun altında (eski araçlarda)</li>
+        </ul>
+    </div>
+
+    <h2>💾 Adım 2: Sürücü Kurulumu</h2>
+    
+    <h3>CANable Sürücüleri</h3>
+    <p>CANable adaptörü kullanıyorsanız:</p>
+    <ol>
+        <li>Adaptörü USB'ye takın</li>
+        <li>Windows otomatik olarak sürücüleri yüklemeye çalışacaktır</li>
+        <li>Eğer "Cihaz tanınmadı" hatası alırsanız:
+            <ul>
+                <li><a href="https://github.com/candle-usb/candleLight_fw" target="_blank">CANable GitHub sayfasına</a> gidin</li>
+                <li>Son sürüm firmware'i indirin</li>
+                <li>Kurulum talimatlarını takip edin</li>
+            </ul>
+        </li>
+    </ol>
+
+    <h3>ELM327 Sürücüleri</h3>
+    <p>ELM327 adaptörü kullanıyorsanız:</p>
+    <ol>
+        <li>Adaptörünüzün üretici web sitesinden sürücüleri indirin</li>
+        <li>Adaptörü USB'ye takın</li>
+        <li>Windows "Yeni donanım bulundu" sihirbazını açacaktır</li>
+        <li>İndirdiğiniz sürücü klasörünü seçin</li>
+        <li>Kurulumu tamamlayın</li>
+    </ol>
+
+    <div class="warning">
+        <strong>⚠️ Önemli:</strong> Sürücüler yüklenmeden adaptör çalışmayacaktır. Kurulum sırasında hata alırsanız, adaptörü çıkarıp tekrar takmayı deneyin.
+    </div>
+
+    <h2>🔍 Adım 3: COM Port Bulma</h2>
+    
+    <h3>Windows'ta COM Port Kontrolü</h3>
+    <ol>
+        <li><strong>Device Manager'ı Açın:</strong>
+            <ul>
+                <li>Windows + X tuşlarına basın</li>
+                <li>"Device Manager" (Aygıt Yöneticisi) seçeneğini seçin</li>
+            </ul>
+        </li>
+        <li><strong>Ports (COM & LPT) Bölümünü Genişletin</strong></li>
+        <li><strong>COM Portunu Bulun:</strong> Adaptörünüz "COM3", "COM4" gibi bir port adıyla görünecektir</li>
+        <li><strong>Port Numarasını Not Edin:</strong> Örnek: COM3, COM4, COM5</li>
+    </ol>
+
+    <div class="highlight">
+        <strong>💡 İpucu:</strong> COM port numarası her bilgisayarda farklı olabilir. Adaptörü farklı bir USB portuna takarsanız, port numarası değişebilir.
+    </div>
+
+    <h3>CarCanReader'da Port Kontrolü</h3>
+    <ol>
+        <li>CarCanReader'ı açın</li>
+        <li><strong>Bağlantı</strong> sekmesine gidin</li>
+        <li>COM port listesinde adaptörünüzü göreceksiniz</li>
+        <li>Port adı genellikle şu formatta olur: <code>COM3</code>, <code>COM4</code>, vb.</li>
+    </ol>
+
+    <h2>🚀 Adım 4: Bağlantı Wizard'ını Kullanma</h2>
+    
+    <p>İlk bağlantı için otomatik wizard'ı kullanmanız önerilir:</p>
+    
+    <h3>Wizard'ı Başlatma</h3>
+    <ol>
+        <li><strong>Menü Yöntemi:</strong> <code>Bağlantı > Bağlantı Wizard'ı</code> veya</li>
+        <li><strong>Buton Yöntemi:</strong> Bağlantı sekmesindeki <strong>"Bağlantı Wizard'ı"</strong> butonuna tıklayın</li>
+    </ol>
+
+    <h3>Wizard Adımları</h3>
+    
+    <h4>Adım 1: Hoşgeldin</h4>
+    <ul>
+        <li>Wizard'a başlamak için <strong>"İleri"</strong> butonuna tıklayın</li>
+        <li>Gereksinimler listesini okuyun</li>
+    </ul>
+
+    <h4>Adım 2: Port Seçimi</h4>
+    <ul>
+        <li>Mevcut COM portları otomatik olarak listelenir</li>
+        <li>CANable adaptörü varsa otomatik olarak işaretlenir</li>
+        <li>Port listesinde adaptörünüzü seçin</li>
+        <li><strong>Baud Rate:</strong> Genellikle 500000 (CAN High Speed) seçilidir</li>
+        <li><strong>"Yenile"</strong> butonu ile port listesini güncelleyebilirsiniz</li>
+        <li><strong>"Otomatik Algıla"</strong> butonu ile CANable adaptörünü otomatik bulabilirsiniz</li>
+    </ul>
+
+    <div style="text-align: center; margin: 20px 0;">
+        <img src="images/connection-wizard.png" alt="Port Seçimi" style="max-width: 700px;">
+        <p class="img-caption">Bağlantı Wizard'ı - Adım 2: Port seçimi ekranı</p>
+    </div>
+
+    <h4>Adım 3: Araç Kontrolü</h4>
+    <ul>
+        <li><strong>Aracın Kontağını Açın:</strong> Motor çalışmasa da olur, kontak açık olmalı</li>
+        <li>OBD-II portunun güç aldığından emin olun</li>
+        <li><strong>"Hazırım, kontağı açtım"</strong> butonuna tıklayın</li>
+        <li>30 saniye içinde hazır olduğunuzu belirtmelisiniz</li>
+    </ul>
+
+    <div class="warning">
+        <strong>⚠️ Dikkat:</strong> Kontak kapalıysa, adaptör güç alamaz ve bağlantı kurulamaz. Aracın kontağının açık olduğundan emin olun.
+    </div>
+
+    <h4>Adım 4: Protokol Tespiti</h4>
+    <ul>
+        <li>Uygulama otomatik olarak CAN protokolünü tespit eder</li>
+        <li>Şu protokoller sırayla denenir:
+            <ul>
+                <li>CAN 500K (High Speed) - En yaygın</li>
+                <li>CAN 250K (Low Speed)</li>
+                <li>CAN 125K</li>
+            </ul>
+        </li>
+        <li>Her protokol için 3 saniye timeout vardır</li>
+        <li>Başarılı protokol yeşil işaret ile gösterilir</li>
+    </ul>
+
+    <div class="success">
+        <strong>✅ Başarılı:</strong> Protokol tespit edildiğinde, yeşil checkmark görünecek ve "İleri" butonu aktif olacaktır.
+    </div>
+
+    <h4>Adım 5: Tamamlandı</h4>
+    <ul>
+        <li><strong>Başarılı:</strong> Yeşil checkmark, "Bağlantı başarılı!" mesajı</li>
+        <li><strong>Bağlantı Özeti:</strong>
+            <ul>
+                <li>Port: COM3</li>
+                <li>Baud Rate: 500000</li>
+                <li>Protokol: CAN HS</li>
+            </ul>
+        </li>
+        <li><strong>"Bağlantıyı Kaydet"</strong> checkbox'ını işaretleyin (sonraki açılışlarda otomatik bağlanır)</li>
+        <li><strong>"Bitir"</strong> butonuna tıklayın</li>
+    </ul>
+
+    <div class="highlight">
+        <strong>💡 İpucu:</strong> Bağlantıyı kaydederseniz, sonraki açılışlarda "Hızlı Bağlan" butonu ile tek tıkla bağlanabilirsiniz.
+    </div>
+
+    <h2>⚡ Hızlı Bağlan</h2>
+    
+    <p>Daha önce başarılı bir bağlantı kurduysanız:</p>
+    <ol>
+        <li>Bağlantı sekmesindeki <strong>"Hızlı Bağlan"</strong> butonuna tıklayın</li>
+        <li>Uygulama son bağlantı ayarlarını kullanarak otomatik bağlanır:
+            <ul>
+                <li>Son kullanılan COM port</li>
+                <li>Son kullanılan Baud rate</li>
+                <li>Son kullanılan Protokol</li>
+            </ul>
+        </li>
+        <li>5 saniye içinde bağlantı kurulmazsa hata mesajı gösterilir</li>
+    </ol>
+
+    <h2>🔧 Manuel Bağlantı</h2>
+    
+    <p>Manuel bağlantı için:</p>
+    <ol>
+        <li><strong>Port Seçimi:</strong> COM port listesinden adaptörünüzü seçin</li>
+        <li><strong>Baud Rate:</strong> Genellikle 500000 (CAN High Speed)</li>
+        <li><strong>Bağlan:</strong> Butona tıklayın</li>
+        <li>Bağlantı durumunu StatusBar'da kontrol edin</li>
+    </ol>
+
+    <h2>📊 Bağlantı Durumu</h2>
+    
+    <div style="text-align: center; margin: 20px 0;">
+        <img src="images/connection-status.png" alt="Bağlantı Durumu" style="max-width: 500px;">
+        <p class="img-caption">StatusBar'da bağlantı durumu göstergesi</p>
+    </div>
+    
+    <p>Bağlantı durumunu kontrol etmek için:</p>
+    <ul>
+        <li><strong>StatusBar:</strong> Alt kısımda bağlantı durumu gösterilir
+            <ul>
+                <li>🟢 <strong>Bağlı (COM3, 500K):</strong> Bağlantı aktif</li>
+                <li>🔴 <strong>Bağlı Değil:</strong> Bağlantı yok</li>
+            </ul>
+        </li>
+        <li><strong>Log:</strong> Bağlantı sekmesindeki log alanında detaylı bilgiler görünür</li>
+        <li><strong>Otomatik Algılama:</strong> Bağlantı koptuğunda uygulama otomatik olarak algılar</li>
+    </ul>
+
+    <h2>❌ Sorun Giderme</h2>
+    
+    <h3>"Bağlantı Kurulamıyor" Sorunu</h3>
+    <p><strong>Olası Nedenler ve Çözümler:</strong></p>
+    <ol>
+        <li><strong>Adaptör USB'ye Takılı Değil:</strong>
+            <ul>
+                <li>Adaptörün USB'ye düzgün takıldığından emin olun</li>
+                <li>Farklı bir USB portu deneyin</li>
+            </ul>
+        </li>
+        <li><strong>Sürücüler Yüklenmemiş:</strong>
+            <ul>
+                <li>Device Manager'da adaptörün göründüğünü kontrol edin</li>
+                <li>Eğer "Bilinmeyen cihaz" olarak görünüyorsa, sürücüleri yükleyin</li>
+            </ul>
+        </li>
+        <li><strong>COM Port Başka Bir Uygulama Tarafından Kullanılıyor:</strong>
+            <ul>
+                <li>Diğer OBD yazılımlarını kapatın</li>
+                <li>HyperTerminal, Putty gibi seri port programlarını kapatın</li>
+            </ul>
+        </li>
+        <li><strong>Baud Rate Yanlış:</strong>
+            <ul>
+                <li>500000, 250000, 125000 değerlerini deneyin</li>
+                <li>Adaptörünüzün dokümantasyonuna bakın</li>
+            </ul>
+        </li>
+        <li><strong>Aracın Kontağı Kapalı:</strong>
+            <ul>
+                <li>Kontağın açık olduğundan emin olun</li>
+                <li>OBD-II portunun güç aldığını kontrol edin</li>
+            </ul>
+        </li>
+    </ol>
+
+    <h3>"Veri Gelmiyor" Sorunu</h3>
+    <p><strong>Olası Nedenler ve Çözümler:</strong></p>
+    <ol>
+        <li><strong>Protokol Uyumsuzluğu:</strong>
+            <ul>
+                <li>Farklı protokol hızlarını deneyin (500K, 250K, 125K)</li>
+                <li>Wizard ile otomatik tespit yapın</li>
+            </ul>
+        </li>
+        <li><strong>OBD-II Port Arızalı:</strong>
+            <ul>
+                <li>Farklı bir araçta deneyin</li>
+                <li>OBD-II portunun fiziksel olarak sağlam olduğunu kontrol edin</li>
+            </ul>
+        </li>
+        <li><strong>Araç Çok Eski:</strong>
+            <ul>
+                <li>1996 öncesi araçlar OBD-II desteklemeyebilir</li>
+                <li>Araç modelinizin OBD-II desteklediğini kontrol edin</li>
+            </ul>
+        </li>
+    </ol>
+
+    <div class="warning">
+        <strong>⚠️ Dikkat:</strong> Bağlantı sırasında adaptörü çıkarmayın veya başka bir uygulama kullanmayın. Bu, bağlantı kopmasına neden olabilir.
+    </div>
+
+    <h2>🔄 Bağlantıyı Yeniden Başlatma</h2>
+    
+    <p>Bağlantı koparsa:</p>
+    <ol>
+        <li>StatusBar'daki durumu kontrol edin</li>
+        <li>Uygulama otomatik olarak bağlantı kopmasını algılar (10 saniye veri gelmezse)</li>
+        <li>"Yeniden Bağlan" seçeneği sunulur</li>
+        <li>Veya manuel olarak "Bağlan" butonuna tekrar tıklayın</li>
+    </ol>
+
+    <h2>📚 İlgili Konular</h2>
+    <ul>
+        <li><a href="getting-started.html">🚀 Başlarken</a> - Kurulum ve gereksinimler</li>
+        <li><a href="obd-reading.html">📊 OBD Veri Okuma</a> - Canlı veri okuma</li>
+        <li><a href="troubleshooting.html#connection">🔧 Bağlantı Sorunları</a> - Detaylı sorun giderme</li>
+    </ul>
+</body>
+</html>

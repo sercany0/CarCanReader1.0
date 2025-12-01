@@ -1,0 +1,69 @@
+{
+  "ecus": [
+    {
+      "address": "7E0",
+      "name": "Engine Control Module",
+      "type": "Engine",
+      "manufacturer": "Generic",
+      "partNumber": "",
+      "description": "Motor kontrol modülü - Genel OBD-II adresi"
+    },
+    {
+      "address": "7E1",
+      "name": "Transmission Control Module",
+      "type": "Transmission",
+      "manufacturer": "Generic",
+      "partNumber": "",
+      "description": "Şanzıman kontrol modülü"
+    },
+    {
+      "address": "7E8",
+      "name": "Engine Control Module (Response)",
+      "type": "Engine",
+      "manufacturer": "Generic",
+      "partNumber": "",
+      "description": "Motor kontrol modülü yanıt adresi"
+    },
+    {
+      "address": "7A0",
+      "name": "ABS Control Module",
+      "type": "ABS",
+      "manufacturer": "Generic",
+      "partNumber": "",
+      "description": "ABS/Fren kontrol modülü"
+    },
+    {
+      "address": "7B0",
+      "name": "Airbag Control Module",
+      "type": "Airbag",
+      "manufacturer": "Generic",
+      "partNumber": "",
+      "description": "Hava yastığı kontrol modülü"
+    },
+    {
+      "address": "7C0",
+      "name": "Body Control Module",
+      "type": "BodyControl",
+      "manufacturer": "Generic",
+      "partNumber": "",
+      "description": "Gövde kontrol modülü"
+    },
+    {
+      "address": "7D0",
+      "name": "Instrument Cluster",
+      "type": "Instrument",
+      "manufacturer": "Generic",
+      "partNumber": "",
+      "description": "Kombi/instrument panel"
+    },
+    {
+      "address": "7F0",
+      "name": "Climate Control Module",
+      "type": "Climate",
+      "manufacturer": "Generic",
+      "partNumber": "",
+      "description": "Klima kontrol modülü"
+    }
+  ]
+}
+

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>OBD Veri Okuma - CarCanReader</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #1e1e2e; color: #ffffff; padding: 30px; line-height: 1.8; max-width: 900px; margin: 0 auto; }
+        h1 { color: #3498db; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        h2 { color: #2ecc71; margin-top: 40px; margin-bottom: 20px; }
+        h3 { color: #f39c12; margin-top: 30px; }
+        p { margin: 15px 0; }
+        ul, ol { margin: 15px 0; padding-left: 30px; }
+        li { margin: 8px 0; }
+        code { background: #2d2d3e; padding: 3px 8px; border-radius: 4px; font-family: 'Consolas', monospace; color: #e74c3c; }
+        .highlight { background: #34495e; padding: 15px; border-left: 4px solid #3498db; margin: 20px 0; }
+        .warning { background: #8b4513; padding: 15px; border-left: 4px solid #f39c12; margin: 20px 0; }
+        .info { background: #1a5490; padding: 15px; border-left: 4px solid #3498db; margin: 20px 0; }
+        img { max-width: 100%; border-radius: 8px; margin: 20px 0; box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+        .img-caption { text-align: center; color: #95a5a6; font-size: 0.9em; margin-top: 10px; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #34495e; }
+        th { background: #2c3e50; color: #3498db; }
+        a { color: #3498db; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>📊 OBD Veri Okuma</h1>
+    
+    <p>CarCanReader ile araç sensörlerinden canlı veri okuma işlemleri. OBD-II (On-Board Diagnostics) standardı ile araç sistemlerinizi izleyin.</p>
+
+    <h2>🔍 OBD-II Nedir?</h2>
+    
+    <p><strong>OBD-II (On-Board Diagnostics II)</strong>, 1996 yılından itibaren tüm araçlarda zorunlu hale getirilmiş bir teşhis sistemidir. Bu sistem sayesinde:</p>
+    <ul>
+        <li>Araç sensörlerinden gerçek zamanlı veri okunabilir</li>
+        <li>Hata kodları tespit edilebilir</li>
+        <li>Emisyon kontrolleri yapılabilir</li>
+        <li>Motor performansı izlenebilir</li>
+    </ul>
+
+    <div class="info">
+        <strong>💡 Bilgi:</strong> OBD-II standardı, tüm üreticilerin aynı protokolü kullanmasını sağlar. Bu sayede tek bir adaptör ve yazılım ile farklı marka araçlara bağlanabilirsiniz.
+    </div>
+
+    <h2>📋 Desteklenen PID'ler (Parameter ID)</h2>
+    
+    <p>CarCanReader aşağıdaki OBD-II PID'lerini destekler:</p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>PID</th>
+                <th>Açıklama</th>
+                <th>Birim</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>0x04</td><td>Motor Yükü (Engine Load)</td><td>%</td></tr>
+            <tr><td>0x05</td><td>Soğutma Suyu Sıcaklığı</td><td>°C</td></tr>
+            <tr><td>0x0C</td><td>Motor Devir Sayısı (RPM)</td><td>rpm</td></tr>
+            <tr><td>0x0D</td><td>Araç Hızı</td><td>km/h</td></tr>
+            <tr><td>0x0F</td><td>Emme Hava Sıcaklığı (IAT)</td><td>°C</td></tr>
+            <tr><td>0x10</td><td>Hava Akışı (MAF)</td><td>g/s</td></tr>
+            <tr><td>0x11</td><td>Gaz Kelebeği Konumu</td><td>%</td></tr>
+            <tr><td>0x1F</td><td>Motor Çalışma Süresi</td><td>saniye</td></tr>
+            <tr><td>0x2F</td><td>Yakıt Seviyesi</td><td>%</td></tr>
+            <tr><td>0x33</td><td>Barometrik Basınç</td><td>kPa</td></tr>
+            <tr><td>0x42</td><td>Kontrol Modülü Voltajı</td><td>V</td></tr>
+            <tr><td>0x46</td><td>Ortam Hava Sıcaklığı</td><td>°C</td></tr>
+            <tr><td>0x5C</td><td>Motor Yağı Sıcaklığı</td><td>°C</td></tr>
+            <tr><td>0x5E</td><td>Yakıt Tüketim Hızı</td><td>L/h</td></tr>
+        </tbody>
+    </table>
+
+    <div class="highlight">
+        <strong>💡 Not:</strong> Tüm araçlar tüm PID'leri desteklemeyebilir. Araç modelinize göre desteklenen PID'ler değişebilir. CarCanReader otomatik olarak desteklenen PID'leri tespit eder.
+    </div>
+
+    <h2>📊 Dashboard Sekmesi</h2>
+    
+    <div style="text-align: center; margin: 20px 0;">
+        <img src="images/dashboard.png" alt="Dashboard Sekmesi" style="max-width: 800px;">
+        <p class="img-caption">Dashboard sekmesi - Canlı veriler ve grafikler</p>
+    </div>
+    
+    <p>Dashboard sekmesinde şu veriler görüntülenir:</p>
+    
+    <h3>Araç Verileri (Sol Panel)</h3>
+    <ul>
+        <li><strong>⚡ RPM:</strong> Motor devir sayısı (0-8000 rpm)</li>
+        <li><strong>🏎️ Hız:</strong> Araç hızı (0-300 km/h)</li>
+        <li><strong>🌡️ Sıcaklık:</strong> Soğutma suyu sıcaklığı (-40°C - 150°C)</li>
+        <li><strong>🚪 Kapı Durumu:</strong> Kapıların açık/kapalı durumu</li>
+        <li><strong>💡 Far Durumu:</strong> Farların açık/kapalı durumu</li>
+    </ul>
+
+    <h3>OBD-II Sensörleri (Sağ Panel)</h3>
+    <ul>
+        <li><strong>Gaz Kelebeği:</strong> Gaz pedalı konumu (%)</li>
+        <li><strong>Motor Yükü:</strong> Motor yükü (%)</li>
+        <li><strong>Emme Hava Sıcaklığı:</strong> IAT (°C)</li>
+        <li><strong>Ortam Sıcaklığı:</strong> Dış hava sıcaklığı (°C)</li>
+        <li><strong>Yakıt Seviyesi:</strong> Yakıt deposu seviyesi (%)</li>
+        <li><strong>MAP:</strong> Manifold Mutlak Basınç (kPa)</li>
+        <li><strong>MAF:</strong> Hava Akışı (g/s)</li>
+        <li><strong>STFT/LTFT:</strong> Kısa/Uzun Vadeli Yakıt Trimi (%)</li>
+        <li><strong>Barometrik Basınç:</strong> Atmosfer basıncı (kPa)</li>
+        <li><strong>Voltaj:</strong> Kontrol modülü voltajı (V)</li>
+        <li><strong>Yakıt Tüketim Hızı:</strong> Anlık yakıt tüketimi (L/h)</li>
+    </ul>
+
+    <h3>OBD Polling Başlatma</h3>
+    <ol>
+        <li>Dashboard sekmesine gidin</li>
+        <li>Sağ panelde <strong>"▶ Başlat"</strong> butonuna tıklayın</li>
+        <li>Uygulama otomatik olarak OBD-II verilerini okumaya başlar</li>
+        <li>Veriler gerçek zamanlı olarak güncellenir</li>
+        <li>Durdurmak için <strong>"⏹ Durdur"</strong> butonuna tıklayın</li>
+    </ol>
+
+    <div class="info">
+        <strong>💡 İpucu:</strong> OBD polling başlatıldığında, StatusBar'da "🟢 OBD Polling: Aktif" mesajı görünecektir.
+    </div>
+
+    <h2>📈 Canlı Grafikler</h2>
+    
+    <div style="text-align: center; margin: 20px 0;">
+        <img src="images/live-charts.png" alt="Canlı Grafikler" style="max-width: 800px;">
+        <p class="img-caption">RPM, Hız ve Sıcaklık grafikleri - Gerçek zamanlı veri görselleştirme</p>
+    </div>
+    
+    <p>Dashboard'un alt kısmında 3 canlı grafik bulunur:</p>
+    <ul>
+        <li><strong>RPM Grafiği:</strong> Motor devir sayısının zaman içindeki değişimi</li>
+        <li><strong>Hız Grafiği:</strong> Araç hızının zaman içindeki değişimi</li>
+        <li><strong>Sıcaklık Grafiği:</strong> Soğutma suyu sıcaklığının zaman içindeki değişimi</li>
+    </ul>
+
+    <h3>Grafik Kontrolleri</h3>
+    <ul>
+        <li><strong>⏸️ Duraklat:</strong> Grafikleri duraklatır (veri toplama devam eder)</li>
+        <li><strong>▶️ Devam:</strong> Duraklatılmış grafikleri devam ettirir</li>
+        <li><strong>🗑️ Temizle:</strong> Tüm grafik verilerini temizler</li>
+        <li><strong>💾 Dışa Aktar (CSV):</strong> Grafik verilerini CSV dosyası olarak kaydeder</li>
+        <li><strong>Zaman Aralığı:</strong> 30s, 60s, 120s, 300s seçenekleri</li>
+    </ul>
+
+    <div class="highlight">
+        <strong>💡 İpucu:</strong> Grafikler otomatik olarak ölçeklenir. Her grafik başlığında mevcut, minimum, maksimum ve ortalama değerler gösterilir.
+    </div>
+
+    <h2>💾 Veri Kaydetme</h2>
+    
+    <h3>CSV Export</h3>
+    <ol>
+        <li>Grafik kontrollerinde <strong>"💾 Dışa Aktar (CSV)"</strong> butonuna tıklayın</li>
+        <li>Kayıt konumunu seçin (varsayılan: <code>data/exports/</code>)</li>
+        <li>Dosya adı otomatik oluşturulur: <code>Dashboard_Export_YYYYMMDD_HHMMSS.csv</code></li>
+        <li>CSV dosyası şu kolonları içerir:
+            <ul>
+                <li>Zaman (tarih/saat)</li>
+                <li>RPM (rpm)</li>
+                <li>Hız (km/h)</li>
+                <li>Sıcaklık (°C)</li>
+            </ul>
+        </li>
+    </ol>
+
+    <h3>CSV Dosyasını Açma</h3>
+    <p>Kaydedilen CSV dosyasını Excel, Google Sheets veya herhangi bir metin editörü ile açabilirsiniz:</p>
+    <ol>
+        <li>CSV dosyasına çift tıklayın</li>
+        <li>Excel otomatik olarak açacaktır</li>
+        <li>Verileri grafik olarak görselleştirebilirsiniz</li>
+    </ol>
+
+    <div class="info">
+        <strong>💡 İpucu:</strong> CSV dosyaları, veri analizi ve raporlama için kullanılabilir. Excel'de pivot tablolar ve grafikler oluşturabilirsiniz.
+    </div>
+
+    <h2>📊 Grafik Kullanımı</h2>
+    
+    <h3>Grafik Özellikleri</h3>
+    <ul>
+        <li><strong>Otomatik Ölçekleme:</strong> Y ekseni otomatik olarak min-max değerlere göre ayarlanır</li>
+        <li><strong>Zaman Ekseni:</strong> X ekseni zamanı gösterir (HH:mm:ss formatında)</li>
+        <li><strong>Renk Kodlaması:</strong>
+            <ul>
+                <li>RPM: Sarı (#FFC107)</li>
+                <li>Hız: Mavi (#3498DB)</li>
+                <li>Sıcaklık: Kırmızı (#E74C3C)</li>
+            </ul>
+        </li>
+        <li><strong>Legend:</strong> Her grafik başlığında mevcut, min, max ve ortalama değerler gösterilir</li>
+    </ul>
+
+    <h3>Grafik Okuma</h3>
+    <ol>
+        <li><strong>Eğilim Analizi:</strong> Grafikteki yükseliş/düşüş eğilimlerini gözlemleyin</li>
+        <li><strong>Ani Değişiklikler:</strong> Ani sıçramalar veya düşüşler sorun işareti olabilir</li>
+        <li><strong>Ortalama Değerler:</strong> Legend'daki ortalama değerler normal çalışma aralığını gösterir</li>
+        <li><strong>Zaman Aralığı:</strong> Farklı zaman aralıkları seçerek detaylı analiz yapabilirsiniz</li>
+    </ol>
+
+    <div class="warning">
+        <strong>⚠️ Dikkat:</strong> Grafikler sadece görselleştirme amaçlıdır. Kritik kararlar vermeden önce profesyonel teşhis yapılmalıdır.
+    </div>
+
+    <h2>🔧 Sorun Giderme</h2>
+    
+    <h3>"Veri Okunmuyor" Sorunu</h3>
+    <p><strong>Olası Nedenler:</strong></p>
+    <ul>
+        <li>OBD polling başlatılmamış olabilir</li>
+        <li>Araç OBD-II standardını desteklemiyor olabilir</li>
+        <li>Bağlantı kopmuş olabilir</li>
+    </ul>
+    <p><strong>Çözümler:</strong></p>
+    <ol>
+        <li>Bağlantı durumunu kontrol edin (StatusBar)</li>
+        <li>"▶ Başlat" butonuna tıklayın</li>
+        <li>Farklı bir araçta deneyin</li>
+    </ol>
+
+    <h3>"Grafikler Güncellenmiyor" Sorunu</h3>
+    <p><strong>Çözümler:</strong></p>
+    <ol>
+        <li>Grafiklerin duraklatılmadığından emin olun</li>
+        <li>"Temizle" butonuna tıklayıp tekrar başlatın</li>
+        <li>Uygulamayı yeniden başlatın</li>
+    </ol>
+
+    <h2>📚 İlgili Konular</h2>
+    <ul>
+        <li><a href="connection.html">🔌 Araç Bağlantısı</a> - Bağlantı kurma</li>
+        <li><a href="dtc-reading.html">🔍 Hata Kodu Okuma</a> - DTC okuma</li>
+        <li><a href="troubleshooting.html#data">🔧 Veri Okuma Sorunları</a> - Sorun giderme</li>
+    </ul>
+</body>
+</html>

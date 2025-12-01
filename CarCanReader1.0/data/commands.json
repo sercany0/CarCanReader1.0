@@ -1,0 +1,452 @@
+﻿{
+  "Volkswagen": {
+    "Golf 2012": {
+      "Lighting": {
+        "Headlight_On": "t1238AABBCCDDEEFF",
+        "Headlight_Off": "t1238000000000000"
+      },
+      "Doors": {
+        "Lock": "t456201",
+        "Unlock": "t456202"
+      }
+    },
+    "Passat 2015": {
+      "Lighting": {
+        "Headlight_On": "t1908FFEEDDCCBBAA",
+        "Headlight_Off": "t1908000000000000"
+      }
+    }
+  },
+  "BMW": {
+    "F30": {
+      "Lighting": {
+        "AngelEyes_On": "t3218ABCDEF001122",
+        "AngelEyes_Off": "t3218000000000000"
+      },
+      "Doors": {
+        "Lock": "t777200",
+        "Unlock": "t777201"
+      }
+    }
+  },
+  "Toyota": {
+    "Prius 2017": {
+      "Engine": {
+        "ENGINE_RPM": {"id": "1C4", "dlc": 8, "description": "Engine RPM signal", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "WHEEL_SPEEDS": {"id": "0AA", "dlc": 8, "description": "Wheel speed sensors FR FL RR RL", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "BRAKE_PRESSURE": {"id": "224", "dlc": 5, "description": "Brake master cylinder pressure", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "GAS_PEDAL": {"id": "1C8", "dlc": 8, "description": "Accelerator pedal position", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "Steering": {
+        "STEERING_ANGLE": {"id": "025", "dlc": 8, "description": "Steering wheel angle sensor", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "STEERING_TORQUE": {"id": "260", "dlc": 8, "description": "EPS torque sensor", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "EPS_STATUS": {"id": "262", "dlc": 5, "description": "Electric power steering status", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "ADAS": {
+        "ACC_CONTROL": {"id": "343", "dlc": 8, "description": "Adaptive cruise control command", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "PCM_CRUISE": {"id": "1D2", "dlc": 8, "description": "Cruise control status from PCM", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "PRE_COLLISION": {"id": "283", "dlc": 7, "description": "Pre-collision system status", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "BodyControl": {
+        "BODY_CONTROL_STATE": {"id": "620", "dlc": 8, "description": "BCM general status", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "LIGHT_STALK": {"id": "614", "dlc": 8, "description": "Turn signal and light stalk position", "source": "OpenDBC", "confidence": "high", "verified": true}
+      }
+    },
+    "RAV4 Prime 2020": {
+      "Engine": {
+        "ENGINE_RPM": {"id": "1C4", "dlc": 8, "description": "Engine RPM signal", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "HYBRID_BATTERY": {"id": "3CB", "dlc": 7, "description": "Hybrid battery SOC and status", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "EV_MODE": {"id": "3CA", "dlc": 8, "description": "EV/HV mode selector status", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "Steering": {
+        "STEERING_ANGLE": {"id": "025", "dlc": 8, "description": "Steering wheel angle sensor", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "LKAS_HUD": {"id": "2E4", "dlc": 8, "description": "Lane keep assist HUD display", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "ADAS": {
+        "ACC_CONTROL": {"id": "343", "dlc": 8, "description": "Adaptive cruise control command", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "DSU_CRUISE": {"id": "1D3", "dlc": 8, "description": "DSU cruise control status", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "RADAR_TRACK": {"id": "2EB", "dlc": 8, "description": "Radar tracked object", "source": "OpenDBC", "confidence": "high", "verified": true}
+      }
+    },
+    "Corolla 2019": {
+      "Engine": {
+        "ENGINE_RPM": {"id": "1C4", "dlc": 8, "description": "Engine RPM signal", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "WHEEL_SPEEDS": {"id": "0AA", "dlc": 8, "description": "Wheel speed sensors", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "Steering": {
+        "STEERING_ANGLE": {"id": "025", "dlc": 8, "description": "Steering wheel angle sensor", "source": "OpenDBC", "confidence": "high", "verified": true}
+      }
+    },
+    "Camry 2018": {
+      "Engine": {
+        "ENGINE_RPM": {"id": "1C4", "dlc": 8, "description": "Engine RPM signal", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "WHEEL_SPEEDS": {"id": "0AA", "dlc": 8, "description": "Wheel speed sensors", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "Steering": {
+        "STEERING_ANGLE": {"id": "025", "dlc": 8, "description": "Steering wheel angle sensor", "source": "OpenDBC", "confidence": "high", "verified": true}
+      }
+    }
+  },
+  "Honda": {
+    "Civic 2016": {
+      "Engine": {
+        "ENGINE_DATA": {"id": "158", "dlc": 8, "description": "Engine RPM, throttle, temperature", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "WHEEL_SPEEDS": {"id": "1D0", "dlc": 8, "description": "Wheel speed sensors FR FL RR RL", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "POWERTRAIN_DATA": {"id": "17C", "dlc": 8, "description": "Gear, clutch, engine torque", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "GAS_PEDAL": {"id": "17C", "dlc": 8, "description": "Accelerator pedal position", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "Steering": {
+        "STEERING_SENSORS": {"id": "18F", "dlc": 8, "description": "Steering angle and torque", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "STEER_STATUS": {"id": "1A4", "dlc": 8, "description": "EPS status and fault codes", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "Brakes": {
+        "VSA_STATUS": {"id": "1A6", "dlc": 8, "description": "ABS/VSA brake control status", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "BRAKE_HOLD": {"id": "1B0", "dlc": 8, "description": "Auto brake hold status", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "ADAS": {
+        "LKAS_HUD": {"id": "304", "dlc": 8, "description": "Lane keep assist HUD", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "ACC_HUD": {"id": "30C", "dlc": 8, "description": "Adaptive cruise control HUD", "source": "OpenDBC", "confidence": "high", "verified": true}
+      }
+    },
+    "Accord 2018": {
+      "Engine": {
+        "ENGINE_DATA": {"id": "158", "dlc": 8, "description": "Engine RPM and throttle", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "WHEEL_SPEEDS": {"id": "1D0", "dlc": 8, "description": "Wheel speed sensors", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "Steering": {
+        "STEERING_SENSORS": {"id": "18F", "dlc": 8, "description": "Steering angle and torque", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "ADAS": {
+        "LKAS_HUD": {"id": "304", "dlc": 8, "description": "Lane keep assist HUD", "source": "OpenDBC", "confidence": "high", "verified": true}
+      }
+    },
+    "CR-V 2019": {
+      "Engine": {
+        "ENGINE_DATA": {"id": "158", "dlc": 8, "description": "Engine RPM and throttle", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "WHEEL_SPEEDS": {"id": "1D0", "dlc": 8, "description": "Wheel speed sensors", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "Steering": {
+        "STEERING_SENSORS": {"id": "18F", "dlc": 8, "description": "Steering angle and torque", "source": "OpenDBC", "confidence": "high", "verified": true}
+      }
+    }
+  },
+  "Acura": {
+    "ILX 2016": {
+      "Engine": {
+        "ENGINE_DATA": {"id": "158", "dlc": 8, "description": "Engine RPM and throttle", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "WHEEL_SPEEDS": {"id": "1D0", "dlc": 8, "description": "Wheel speed sensors", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "Steering": {
+        "STEERING_SENSORS": {"id": "18F", "dlc": 8, "description": "Steering angle and torque", "source": "OpenDBC", "confidence": "high", "verified": true}
+      }
+    },
+    "RDX 2020": {
+      "Engine": {
+        "ENGINE_DATA": {"id": "158", "dlc": 8, "description": "Engine RPM and throttle", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "ADAS": {
+        "LKAS_HUD": {"id": "304", "dlc": 8, "description": "Lane keep assist HUD", "source": "OpenDBC", "confidence": "high", "verified": true}
+      }
+    }
+  },
+  "Hyundai": {
+    "Sonata 2020": {
+      "Engine": {
+        "ENGINE_DATA": {"id": "2B0", "dlc": 8, "description": "Engine RPM, throttle position", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "WHEEL_SPEEDS": {"id": "386", "dlc": 8, "description": "Wheel speed sensors", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "Steering": {
+        "STEERING_ANGLE": {"id": "2B0", "dlc": 8, "description": "Steering wheel angle", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "MDPS_TORQUE": {"id": "251", "dlc": 8, "description": "MDPS torque sensor", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "ADAS": {
+        "LKAS_STATUS": {"id": "340", "dlc": 8, "description": "Lane keep assist status", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "SCC_CONTROL": {"id": "1CF", "dlc": 8, "description": "Smart cruise control command", "source": "OpenDBC", "confidence": "high", "verified": true}
+      }
+    },
+    "Ioniq 2019": {
+      "Engine": {
+        "ENGINE_DATA": {"id": "2B0", "dlc": 8, "description": "Engine/motor data", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "HYBRID_STATUS": {"id": "2B4", "dlc": 8, "description": "Hybrid system status", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "Steering": {
+        "STEERING_ANGLE": {"id": "2B0", "dlc": 8, "description": "Steering wheel angle", "source": "OpenDBC", "confidence": "high", "verified": true}
+      }
+    },
+    "Kona EV 2020": {
+      "Engine": {
+        "MOTOR_DATA": {"id": "2B0", "dlc": 8, "description": "Electric motor data", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "BATTERY_SOC": {"id": "2B4", "dlc": 8, "description": "Battery state of charge", "source": "OpenDBC", "confidence": "high", "verified": true}
+      }
+    }
+  },
+  "Kia": {
+    "Optima 2019": {
+      "Engine": {
+        "ENGINE_DATA": {"id": "2B0", "dlc": 8, "description": "Engine RPM, throttle position", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "WHEEL_SPEEDS": {"id": "386", "dlc": 8, "description": "Wheel speed sensors", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "Steering": {
+        "STEERING_ANGLE": {"id": "2B0", "dlc": 8, "description": "Steering wheel angle", "source": "OpenDBC", "confidence": "high", "verified": true}
+      }
+    },
+    "Stinger 2018": {
+      "Engine": {
+        "ENGINE_DATA": {"id": "2B0", "dlc": 8, "description": "Engine RPM, throttle", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "Steering": {
+        "STEERING_ANGLE": {"id": "2B0", "dlc": 8, "description": "Steering wheel angle", "source": "OpenDBC", "confidence": "high", "verified": true}
+      }
+    },
+    "Niro EV 2020": {
+      "Engine": {
+        "MOTOR_DATA": {"id": "2B0", "dlc": 8, "description": "Electric motor data", "source": "OpenDBC", "confidence": "high", "verified": true}
+      }
+    }
+  },
+  "Subaru": {
+    "Outback 2020": {
+      "Engine": {
+        "ENGINE_DATA": {"id": "140", "dlc": 8, "description": "Engine RPM, throttle, coolant temp", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "WHEEL_SPEEDS": {"id": "13A", "dlc": 8, "description": "Wheel speed sensors", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "Steering": {
+        "STEERING_ANGLE": {"id": "119", "dlc": 8, "description": "Steering wheel angle sensor", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "Brakes": {
+        "BRAKE_STATUS": {"id": "139", "dlc": 8, "description": "Brake pedal and ABS status", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "ADAS": {
+        "EYESIGHT_HUD": {"id": "321", "dlc": 8, "description": "EyeSight system HUD display", "source": "OpenDBC", "confidence": "high", "verified": true}
+      }
+    },
+    "Crosstrek 2019": {
+      "Engine": {
+        "ENGINE_DATA": {"id": "140", "dlc": 8, "description": "Engine RPM and throttle", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "Steering": {
+        "STEERING_ANGLE": {"id": "119", "dlc": 8, "description": "Steering wheel angle", "source": "OpenDBC", "confidence": "high", "verified": true}
+      }
+    },
+    "Forester 2019": {
+      "Engine": {
+        "ENGINE_DATA": {"id": "140", "dlc": 8, "description": "Engine RPM and throttle", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "Steering": {
+        "STEERING_ANGLE": {"id": "119", "dlc": 8, "description": "Steering wheel angle", "source": "OpenDBC", "confidence": "high", "verified": true}
+      }
+    }
+  },
+  "Chevrolet": {
+    "Volt 2017": {
+      "Engine": {
+        "ENGINE_RPM": {"id": "1A1", "dlc": 8, "description": "Engine RPM (when ICE running)", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "PROPULSION_STATUS": {"id": "3E3", "dlc": 8, "description": "Propulsion system status", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "BATTERY_STATUS": {"id": "3F1", "dlc": 8, "description": "High voltage battery status", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "Steering": {
+        "STEERING_ANGLE": {"id": "1E5", "dlc": 8, "description": "Steering wheel angle sensor", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "Brakes": {
+        "BRAKE_STATUS": {"id": "1C4", "dlc": 8, "description": "Brake pedal and regen status", "source": "OpenDBC", "confidence": "high", "verified": true}
+      }
+    },
+    "Bolt EV 2019": {
+      "Engine": {
+        "MOTOR_DATA": {"id": "3E3", "dlc": 8, "description": "Electric motor data", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "BATTERY_STATUS": {"id": "3F1", "dlc": 8, "description": "High voltage battery SOC", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "Steering": {
+        "STEERING_ANGLE": {"id": "1E5", "dlc": 8, "description": "Steering wheel angle sensor", "source": "OpenDBC", "confidence": "high", "verified": true}
+      }
+    },
+    "Silverado 2020": {
+      "Engine": {
+        "ENGINE_DATA": {"id": "1A1", "dlc": 8, "description": "Engine RPM and throttle", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "Steering": {
+        "STEERING_ANGLE": {"id": "1E5", "dlc": 8, "description": "Steering wheel angle", "source": "OpenDBC", "confidence": "high", "verified": true}
+      }
+    }
+  },
+  "GMC": {
+    "Sierra 2020": {
+      "Engine": {
+        "ENGINE_DATA": {"id": "1A1", "dlc": 8, "description": "Engine RPM and throttle", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "Steering": {
+        "STEERING_ANGLE": {"id": "1E5", "dlc": 8, "description": "Steering wheel angle", "source": "OpenDBC", "confidence": "high", "verified": true}
+      }
+    }
+  },
+  "Cadillac": {
+    "CT6 2018": {
+      "Engine": {
+        "ENGINE_DATA": {"id": "1A1", "dlc": 8, "description": "Engine RPM and throttle", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "ADAS": {
+        "SUPERCRUISE_STATUS": {"id": "320", "dlc": 8, "description": "SuperCruise system status", "source": "OpenDBC", "confidence": "high", "verified": true}
+      }
+    }
+  },
+  "Chrysler": {
+    "Pacifica Hybrid 2017": {
+      "Engine": {
+        "ENGINE_DATA": {"id": "2A8", "dlc": 8, "description": "Engine/motor RPM", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "HYBRID_STATUS": {"id": "2B0", "dlc": 8, "description": "Hybrid system status", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "Steering": {
+        "STEERING_ANGLE": {"id": "2A0", "dlc": 8, "description": "Steering wheel angle sensor", "source": "OpenDBC", "confidence": "high", "verified": true}
+      }
+    }
+  },
+  "Ford": {
+    "Fusion 2018": {
+      "Engine": {
+        "ENGINE_DATA": {"id": "215", "dlc": 8, "description": "Engine RPM and throttle", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "WHEEL_SPEEDS": {"id": "217", "dlc": 8, "description": "Wheel speed sensors", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "Steering": {
+        "STEERING_ANGLE": {"id": "3D3", "dlc": 8, "description": "Steering wheel angle sensor", "source": "OpenDBC", "confidence": "high", "verified": true}
+      }
+    },
+    "F-150 2020": {
+      "Engine": {
+        "ENGINE_DATA": {"id": "215", "dlc": 8, "description": "Engine RPM and throttle", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "Steering": {
+        "STEERING_ANGLE": {"id": "3D3", "dlc": 8, "description": "Steering wheel angle", "source": "OpenDBC", "confidence": "high", "verified": true}
+      }
+    },
+    "Explorer 2020": {
+      "Engine": {
+        "ENGINE_DATA": {"id": "215", "dlc": 8, "description": "Engine RPM and throttle", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "ADAS": {
+        "COPILOT_STATUS": {"id": "350", "dlc": 8, "description": "CoPilot360 system status", "source": "OpenDBC", "confidence": "high", "verified": true}
+      }
+    }
+  },
+  "Lincoln": {
+    "MKZ 2018": {
+      "Engine": {
+        "ENGINE_DATA": {"id": "215", "dlc": 8, "description": "Engine RPM and throttle", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "Steering": {
+        "STEERING_ANGLE": {"id": "3D3", "dlc": 8, "description": "Steering wheel angle sensor", "source": "OpenDBC", "confidence": "high", "verified": true}
+      }
+    }
+  },
+  "Mazda": {
+    "CX-5 2019": {
+      "Engine": {
+        "ENGINE_DATA": {"id": "215", "dlc": 8, "description": "Engine RPM and throttle", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "WHEEL_SPEEDS": {"id": "4B0", "dlc": 8, "description": "Wheel speed sensors", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "Steering": {
+        "STEERING_ANGLE": {"id": "400", "dlc": 8, "description": "Steering wheel angle sensor", "source": "OpenDBC", "confidence": "high", "verified": true}
+      }
+    },
+    "Mazda3 2019": {
+      "Engine": {
+        "ENGINE_DATA": {"id": "215", "dlc": 8, "description": "Engine RPM and throttle", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "Steering": {
+        "STEERING_ANGLE": {"id": "400", "dlc": 8, "description": "Steering wheel angle", "source": "OpenDBC", "confidence": "high", "verified": true}
+      }
+    }
+  },
+  "Nissan": {
+    "Leaf 2018": {
+      "Engine": {
+        "MOTOR_DATA": {"id": "284", "dlc": 8, "description": "Electric motor data", "source": "OpenDBC", "confidence": "high", "verified": true},
+        "BATTERY_STATUS": {"id": "5BC", "dlc": 8, "description": "Traction battery SOC", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "Steering": {
+        "STEERING_ANGLE": {"id": "2B0", "dlc": 8, "description": "Steering wheel angle sensor", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "ADAS": {
+        "PROPILOT_STATUS": {"id": "360", "dlc": 8, "description": "ProPilot assist status", "source": "OpenDBC", "confidence": "high", "verified": true}
+      }
+    },
+    "X-Trail 2017": {
+      "Engine": {
+        "ENGINE_DATA": {"id": "180", "dlc": 8, "description": "Engine RPM and throttle", "source": "OpenDBC", "confidence": "high", "verified": true}
+      },
+      "Steering": {
+        "STEERING_ANGLE": {"id": "2B0", "dlc": 8, "description": "Steering wheel angle", "source": "OpenDBC", "confidence": "high", "verified": true}
+      }
+    },
+    "Rogue 2019": {
+      "Engine": {
+        "ENGINE_DATA": {"id": "180", "dlc": 8, "description": "Engine RPM and throttle", "source": "OpenDBC", "confidence": "high", "verified": true}
+      }
+    }
+  },
+  "OBD-II": {
+    "Standard": {
+      "Mode01": {
+        "PID_04_ENGINE_LOAD": {"id": "7DF", "dlc": 8, "frame": "t7DF8020104000000000", "description": "Calculated Engine Load", "source": "OBD-II Standard", "confidence": "high", "verified": true},
+        "PID_05_COOLANT_TEMP": {"id": "7DF", "dlc": 8, "frame": "t7DF8020105000000000", "description": "Engine Coolant Temperature", "source": "OBD-II Standard", "confidence": "high", "verified": true},
+        "PID_06_SHORT_FUEL_TRIM": {"id": "7DF", "dlc": 8, "frame": "t7DF8020106000000000", "description": "Short Term Fuel Trim Bank 1", "source": "OBD-II Standard", "confidence": "high", "verified": true},
+        "PID_07_LONG_FUEL_TRIM": {"id": "7DF", "dlc": 8, "frame": "t7DF8020107000000000", "description": "Long Term Fuel Trim Bank 1", "source": "OBD-II Standard", "confidence": "high", "verified": true},
+        "PID_0B_INTAKE_MAP": {"id": "7DF", "dlc": 8, "frame": "t7DF802010B000000000", "description": "Intake Manifold Absolute Pressure", "source": "OBD-II Standard", "confidence": "high", "verified": true},
+        "PID_0C_ENGINE_RPM": {"id": "7DF", "dlc": 8, "frame": "t7DF802010C000000000", "description": "Engine RPM", "source": "OBD-II Standard", "confidence": "high", "verified": true},
+        "PID_0D_VEHICLE_SPEED": {"id": "7DF", "dlc": 8, "frame": "t7DF802010D000000000", "description": "Vehicle Speed", "source": "OBD-II Standard", "confidence": "high", "verified": true},
+        "PID_0E_TIMING_ADVANCE": {"id": "7DF", "dlc": 8, "frame": "t7DF802010E000000000", "description": "Timing Advance", "source": "OBD-II Standard", "confidence": "high", "verified": true},
+        "PID_0F_INTAKE_AIR_TEMP": {"id": "7DF", "dlc": 8, "frame": "t7DF802010F000000000", "description": "Intake Air Temperature", "source": "OBD-II Standard", "confidence": "high", "verified": true},
+        "PID_10_MAF_RATE": {"id": "7DF", "dlc": 8, "frame": "t7DF8020110000000000", "description": "MAF Air Flow Rate", "source": "OBD-II Standard", "confidence": "high", "verified": true},
+        "PID_11_THROTTLE_POS": {"id": "7DF", "dlc": 8, "frame": "t7DF8020111000000000", "description": "Throttle Position", "source": "OBD-II Standard", "confidence": "high", "verified": true},
+        "PID_1C_OBD_STANDARD": {"id": "7DF", "dlc": 8, "frame": "t7DF802011C000000000", "description": "OBD Standards Compliance", "source": "OBD-II Standard", "confidence": "high", "verified": true},
+        "PID_1F_RUN_TIME": {"id": "7DF", "dlc": 8, "frame": "t7DF802011F000000000", "description": "Run Time Since Engine Start", "source": "OBD-II Standard", "confidence": "high", "verified": true},
+        "PID_21_MIL_DISTANCE": {"id": "7DF", "dlc": 8, "frame": "t7DF8020121000000000", "description": "Distance Traveled With MIL On", "source": "OBD-II Standard", "confidence": "high", "verified": true},
+        "PID_2F_FUEL_LEVEL": {"id": "7DF", "dlc": 8, "frame": "t7DF802012F000000000", "description": "Fuel Tank Level Input", "source": "OBD-II Standard", "confidence": "high", "verified": true},
+        "PID_31_CODES_CLEARED_DIST": {"id": "7DF", "dlc": 8, "frame": "t7DF8020131000000000", "description": "Distance Since Codes Cleared", "source": "OBD-II Standard", "confidence": "high", "verified": true},
+        "PID_33_BAROMETRIC": {"id": "7DF", "dlc": 8, "frame": "t7DF8020133000000000", "description": "Barometric Pressure", "source": "OBD-II Standard", "confidence": "high", "verified": true},
+        "PID_42_CONTROL_VOLTAGE": {"id": "7DF", "dlc": 8, "frame": "t7DF8020142000000000", "description": "Control Module Voltage", "source": "OBD-II Standard", "confidence": "high", "verified": true},
+        "PID_46_AMBIENT_TEMP": {"id": "7DF", "dlc": 8, "frame": "t7DF8020146000000000", "description": "Ambient Air Temperature", "source": "OBD-II Standard", "confidence": "high", "verified": true},
+        "PID_5E_FUEL_RATE": {"id": "7DF", "dlc": 8, "frame": "t7DF802015E000000000", "description": "Engine Fuel Rate", "source": "OBD-II Standard", "confidence": "high", "verified": true}
+      },
+      "Mode03": {
+        "READ_DTC": {"id": "7DF", "dlc": 8, "frame": "t7DF8010300000000000", "description": "Read Diagnostic Trouble Codes", "source": "OBD-II Standard", "confidence": "high", "verified": true}
+      },
+      "Mode04": {
+        "CLEAR_DTC": {"id": "7DF", "dlc": 8, "frame": "t7DF8010400000000000", "description": "Clear Diagnostic Trouble Codes", "source": "OBD-II Standard", "confidence": "high", "verified": true}
+      },
+      "Mode09": {
+        "PID_02_VIN": {"id": "7DF", "dlc": 8, "frame": "t7DF8020902000000000", "description": "Vehicle Identification Number", "source": "OBD-II Standard", "confidence": "high", "verified": true},
+        "PID_04_CALIBRATION_ID": {"id": "7DF", "dlc": 8, "frame": "t7DF8020904000000000", "description": "Calibration ID", "source": "OBD-II Standard", "confidence": "high", "verified": true},
+        "PID_06_CVN": {"id": "7DF", "dlc": 8, "frame": "t7DF8020906000000000", "description": "Calibration Verification Number", "source": "OBD-II Standard", "confidence": "high", "verified": true},
+        "PID_0A_ECU_NAME": {"id": "7DF", "dlc": 8, "frame": "t7DF802090A000000000", "description": "ECU Name", "source": "OBD-II Standard", "confidence": "high", "verified": true}
+      }
+    }
+  },
+  "GM_Research": {
+    "HS_CAN_Generic": {
+      "Engine": {
+        "RPM_TORQUE": {"id": "0C9", "dlc": 8, "description": "Engine RPM and torque", "source": "OpenGarages", "confidence": "medium", "verified": false},
+        "THROTTLE_POS": {"id": "0C5", "dlc": 8, "description": "Throttle pedal position", "source": "OpenGarages", "confidence": "medium", "verified": false}
+      },
+      "BodyControl": {
+        "BCM_DOOR_STATUS": {"id": "10C", "dlc": 8, "description": "Door open/close status", "source": "OpenGarages", "confidence": "medium", "verified": false},
+        "BCM_LIGHT_STATUS": {"id": "140", "dlc": 8, "description": "Exterior lighting status", "source": "OpenGarages", "confidence": "medium", "verified": false}
+      }
+    }
+  },
+  "Ford_Research": {
+    "MS_CAN_Generic": {
+      "BodyControl": {
+        "BCM_STATUS": {"id": "3B3", "dlc": 8, "description": "Body control module status", "source": "OpenGarages", "confidence": "medium", "verified": false},
+        "DOOR_LOCKS": {"id": "3B5", "dlc": 8, "description": "Central locking status", "source": "OpenGarages", "confidence": "medium", "verified": false}
+      }
+    }
+  },
+  "Toyota_Research": {
+    "Generic": {
+      "BodyControl": {
+        "BCM_STATUS": {"id": "750", "dlc": 8, "description": "Body ECU status", "source": "OpenGarages", "confidence": "medium", "verified": false},
+        "SMART_KEY": {"id": "752", "dlc": 8, "description": "Smart key system status", "source": "OpenGarages", "confidence": "medium", "verified": false}
+      }
+    }
+  }
+}

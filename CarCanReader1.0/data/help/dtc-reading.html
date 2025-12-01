@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Hata Kodu Okuma - CarCanReader</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #1e1e2e; color: #ffffff; padding: 30px; line-height: 1.8; max-width: 900px; margin: 0 auto; }
+        h1 { color: #3498db; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        h2 { color: #2ecc71; margin-top: 40px; margin-bottom: 20px; }
+        h3 { color: #f39c12; margin-top: 30px; }
+        p { margin: 15px 0; }
+        ul, ol { margin: 15px 0; padding-left: 30px; }
+        li { margin: 8px 0; }
+        code { background: #2d2d3e; padding: 3px 8px; border-radius: 4px; font-family: 'Consolas', monospace; color: #e74c3c; }
+        .highlight { background: #34495e; padding: 15px; border-left: 4px solid #3498db; margin: 20px 0; }
+        .warning { background: #8b4513; padding: 15px; border-left: 4px solid #f39c12; margin: 20px 0; }
+        .info { background: #1a5490; padding: 15px; border-left: 4px solid #3498db; margin: 20px 0; }
+        img { max-width: 100%; border-radius: 8px; margin: 20px 0; box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+        .img-caption { text-align: center; color: #95a5a6; font-size: 0.9em; margin-top: 10px; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #34495e; }
+        th { background: #2c3e50; color: #3498db; }
+        a { color: #3498db; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Hata Kodu Okuma</h1>
+    
+    <p>DTC (Diagnostic Trouble Code) okuma ve görüntüleme işlemleri. Araç kontrol modüllerinden hata kodlarını okuyun, anlamlarını öğrenin ve detaylı bilgileri görüntüleyin.</p>
+
+    <h2>📖 DTC Nedir?</h2>
+    
+    <p><strong>DTC (Diagnostic Trouble Code)</strong>, araç kontrol modüllerinin tespit ettiği arızalara verilen kodlardır. Her kod, belirli bir sorunu veya durumu temsil eder.</p>
+
+    <h3>DTC Kategorileri</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Kategori</th>
+                <th>Kod Aralığı</th>
+                <th>Açıklama</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Powertrain (P)</strong></td>
+                <td>P0000-P3999</td>
+                <td>Motor, şanzıman, yakıt sistemi</td>
+            </tr>
+            <tr>
+                <td><strong>Chassis (C)</strong></td>
+                <td>C0000-C3999</td>
+                <td>ABS, fren, süspansiyon, direksiyon</td>
+            </tr>
+            <tr>
+                <td><strong>Body (B)</strong></td>
+                <td>B0000-B3999</td>
+                <td>Klima, aydınlatma, güvenlik sistemleri</td>
+            </tr>
+            <tr>
+                <td><strong>Network (U)</strong></td>
+                <td>U0000-U3999</td>
+                <td>CAN bus, iletişim, yazılım modülleri</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="info">
+        <strong>💡 Bilgi:</strong> CarCanReader, 1000+ DTC kodunu içeren kapsamlı bir veritabanına sahiptir. Her kod için Türkçe açıklama, belirtiler, nedenler ve çözüm önerileri bulunur.
+    </div>
+
+    <h2>📋 Bekleyen DTC'ler (Mode 07)</h2>
+    
+    <p>Bekleyen DTC'ler, araç çalışırken tespit edilen ancak henüz kalıcı olmayan hatalardır. Bu kodlar genellikle araç birkaç kez çalıştırıldığında kaybolur.</p>
+
+    <h3>Bekleyen DTC Okuma Adımları</h3>
+    <ol>
+        <li><strong>Bağlantı Kontrolü:</strong> Önce CAN adaptörüne bağlı olduğunuzdan emin olun</li>
+        <li><strong>Teşhis Sekmesi:</strong> Ana pencerede <strong>"Teşhis"</strong> sekmesine gidin</li>
+        <li><strong>Butona Tıklayın:</strong> <strong>"Bekleyen DTC'leri Oku"</strong> butonuna tıklayın</li>
+        <li><strong>Bekleyin:</strong> Uygulama Mode 07 komutunu gönderir ve yanıt bekler</li>
+        <li><strong>Sonuçları Görüntüleyin:</strong> Okunan DTC'ler listede görüntülenir</li>
+    </ol>
+
+    <div style="text-align: center; margin: 20px 0;">
+        <img src="images/dtc-list.png" alt="DTC Listesi" style="max-width: 700px;">
+        <p class="img-caption">Teşhis sekmesi - DTC listesi ve arama</p>
+    </div>
+
+    <div class="highlight">
+        <strong>💡 İpucu:</strong> Bekleyen DTC'ler, sorunun henüz kalıcı olmadığını gösterir. Eğer sorun devam ederse, bu kodlar kayıtlı DTC'lere dönüşür.
+    </div>
+
+    <h2>💾 Kayıtlı DTC'ler (Mode 03)</h2>
+    
+    <p>Kayıtlı DTC'ler, kontrol modülünde kalıcı olarak saklanan hatalardır. Bu kodlar, sorun çözülmeden silinmemelidir.</p>
+
+    <h3>Kayıtlı DTC Okuma Adımları</h3>
+    <ol>
+        <li><strong>Teşhis Sekmesi:</strong> Ana pencerede <strong>"Teşhis"</strong> sekmesine gidin</li>
+        <li><strong>Butona Tıklayın:</strong> <strong>"Kayıtlı DTC'leri Oku"</strong> butonuna tıklayın</li>
+        <li><strong>Bekleyin:</strong> Uygulama Mode 03 komutunu gönderir</li>
+        <li><strong>Sonuçları Görüntüleyin:</strong> Kayıtlı DTC'ler listede görüntülenir</li>
+    </ol>
+
+    <div class="warning">
+        <strong>⚠️ Önemli:</strong> Kayıtlı DTC'ler, ciddi sorunları işaret edebilir. Bu kodları görmezden gelmeyin ve gerekirse profesyonel yardım alın.
+    </div>
+
+    <h2>📚 Kod Anlamlarını Öğrenme</h2>
+    
+    <h3>DTC Listesi Özellikleri</h3>
+    <p>Okunan DTC'ler, Teşhis sekmesindeki DataGridView'de görüntülenir:</p>
+    <ul>
+        <li><strong>Kod:</strong> DTC kodu (örn: P0301, C1201, B1000)</li>
+        <li><strong>Açıklama:</strong> Türkçe açıklama (veritabanından)</li>
+        <li><strong>Kategori:</strong> Powertrain, Chassis, Body, Network</li>
+        <li><strong>Şiddet:</strong> low, medium, high, critical (renk kodlu)</li>
+    </ul>
+
+    <h3>Renk Kodlaması</h3>
+    <ul>
+        <li><strong style="color: #e74c3c;">🔴 Critical:</strong> Kritik hatalar - Hemen müdahale gerekir</li>
+        <li><strong style="color: #f39c12;">🟠 High:</strong> Yüksek öncelikli hatalar - Yakında çözülmeli</li>
+        <li><strong style="color: #f1c40f;">🟡 Medium:</strong> Orta öncelikli hatalar - İzlenmeli</li>
+        <li><strong style="color: #2ecc71;">🟢 Low:</strong> Düşük öncelikli hatalar - Bilgi amaçlı</li>
+    </ul>
+
+    <h3>DTC Detayları</h3>
+    <p>Bir DTC'ye çift tıklayarak detaylı bilgileri görüntüleyebilirsiniz:</p>
+    <ol>
+        <li>Listeden bir DTC'ye çift tıklayın</li>
+        <li>DTC Detay penceresi açılır</li>
+        <li>Şu bilgileri görüntüleyebilirsiniz:
+            <ul>
+                <li><strong>Kod ve Açıklama:</strong> Tam açıklama (Türkçe/İngilizce)</li>
+                <li><strong>Kategori ve Alt Kategori:</strong> Hatanın hangi sistemde olduğu</li>
+                <li><strong>Belirtiler:</strong> Hatanın neden olduğu belirtiler
+                    <ul>
+                        <li>Motor titremesi</li>
+                        <li>Güç kaybı</li>
+                        <li>Yakıt tüketimi artışı</li>
+                        <li>Kontrol lambası yanması</li>
+                    </ul>
+                </li>
+                <li><strong>Olası Nedenler:</strong> Hatanın olası nedenleri
+                    <ul>
+                        <li>Buji arızası</li>
+                        <li>Bobin arızası</li>
+                        <li>Enjektör tıkanması</li>
+                        <li>Düşük yakıt basıncı</li>
+                    </ul>
+                </li>
+                <li><strong>Çözüm Önerileri:</strong> Sorun giderme adımları
+                    <ul>
+                        <li>Bujileri kontrol et</li>
+                        <li>Bobinleri test et</li>
+                        <li>Enjektörleri temizle</li>
+                        <li>Yakıt basıncını ölç</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+    </ol>
+
+    <div style="text-align: center; margin: 20px 0;">
+        <img src="images/dtc-detail.png" alt="DTC Detay Penceresi" style="max-width: 600px;">
+        <p class="img-caption">DTC detay penceresi - Belirtiler, nedenler ve çözümler</p>
+    </div>
+
+    <h3>DTC Detay Penceresi Özellikleri</h3>
+    <ul>
+        <li><strong>Kopyala Butonu:</strong> DTC bilgilerini panoya kopyalar</li>
+        <li><strong>İnternette Ara Butonu:</strong> DTC kodunu varsayılan tarayıcıda arar</li>
+        <li><strong>Detaylı Bilgi:</strong> Tüm belirtiler, nedenler ve çözümler listelenir</li>
+    </ul>
+
+    <h2>🔍 Arama ve Filtreleme</h2>
+    
+    <h3>Arama Kutusu</h3>
+    <p>DTC koduna veya açıklamaya göre arama yapabilirsiniz:</p>
+    <ol>
+        <li>Teşhis sekmesindeki <strong>arama kutusuna</strong> yazın</li>
+        <li>Arama anlık olarak çalışır (her tuşta filtreleme)</li>
+        <li>Hem kod hem açıklama içinde arama yapılır</li>
+        <li>Örnek aramalar:
+            <ul>
+                <li><code>P0301</code> - Kod ile arama</li>
+                <li><code>ateşleme</code> - Açıklama ile arama</li>
+                <li><code>silindir</code> - Kelime ile arama</li>
+            </ul>
+        </li>
+    </ol>
+
+    <h3>Kategori Filtresi</h3>
+    <p>ComboBox'dan kategori seçerek filtreleyebilirsiniz:</p>
+    <ul>
+        <li><strong>Tümü:</strong> Tüm kategorileri gösterir</li>
+        <li><strong>Powertrain:</strong> Sadece motor/şanzıman kodları</li>
+        <li><strong>Chassis:</strong> Sadece şasi kodları</li>
+        <li><strong>Body:</strong> Sadece gövde kodları</li>
+        <li><strong>Network:</strong> Sadece ağ/iletişim kodları</li>
+    </ul>
+
+    <div class="highlight">
+        <strong>💡 İpucu:</strong> Arama ve filtreleme birlikte kullanılabilir. Örneğin, "Powertrain" kategorisinde "ateşleme" kelimesini arayabilirsiniz.
+    </div>
+
+    <h2>📊 DTC İstatistikleri</h2>
+    
+    <p>Teşhis sekmesinde DTC sayısı gösterilir:</p>
+    <ul>
+        <li><strong>Toplam DTC:</strong> Okunan toplam hata kodu sayısı</li>
+        <li><strong>Kategori Dağılımı:</strong> Her kategorideki DTC sayısı</li>
+        <li><strong>Şiddet Dağılımı:</strong> Şiddet seviyelerine göre dağılım</li>
+    </ul>
+
+    <h2>🔧 Pratik Örnekler</h2>
+    
+    <h3>Örnek 1: P0301 (1. Silindir Ateşleme Hatası)</h3>
+    <ol>
+        <li><strong>DTC'yi Okuyun:</strong> "Bekleyen DTC'leri Oku" butonuna tıklayın</li>
+        <li><strong>Kodu Bulun:</strong> Listede <code>P0301</code> kodunu görün</li>
+        <li><strong>Detaylarına Bakın:</strong> Koda çift tıklayın</li>
+        <li><strong>Bilgileri İnceleyin:</strong>
+            <ul>
+                <li>Açıklama: "1. Silindir Ateşleme Hatası Algılandı"</li>
+                <li>Belirtiler: Motor titremesi, güç kaybı</li>
+                <li>Nedenler: Buji arızası, bobin arızası</li>
+                <li>Çözümler: Bujileri kontrol et, bobinleri test et</li>
+            </ul>
+        </li>
+        <li><strong>İnternette Ara:</strong> "İnternette Ara" butonu ile daha fazla bilgi bulun</li>
+    </ol>
+
+    <h3>Örnek 2: Birden Fazla DTC</h3>
+    <ol>
+        <li><strong>Tüm DTC'leri Okuyun:</strong> Hem bekleyen hem kayıtlı DTC'leri okuyun</li>
+        <li><strong>Kategorilere Göre Filtreleyin:</strong> Önce Powertrain kodlarına bakın</li>
+        <li><strong>Şiddete Göre Sıralayın:</strong> Critical ve High öncelikli kodlara odaklanın</li>
+        <li><strong>İlişkili Kodları Bulun:</strong> Benzer kodları birlikte değerlendirin</li>
+    </ol>
+
+    <div class="info">
+        <strong>💡 İpucu:</strong> Birden fazla DTC varsa, bunlar birbiriyle ilişkili olabilir. Örneğin, bir sensör arızası birden fazla DTC'ye neden olabilir.
+    </div>
+
+    <h2>📚 İlgili Konular</h2>
+    <ul>
+        <li><a href="dtc-clearing.html">🗑️ Hata Kodu Silme</a> - DTC silme işlemleri</li>
+        <li><a href="obd-reading.html">📊 OBD Veri Okuma</a> - Canlı veri okuma</li>
+        <li><a href="troubleshooting.html">🔧 Sorun Giderme</a> - Yaygın sorunlar</li>
+    </ul>
+</body>
+</html>

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Sorun Giderme - CarCanReader</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #1e1e2e; color: #ffffff; padding: 30px; line-height: 1.8; max-width: 900px; margin: 0 auto; }
+        h1 { color: #3498db; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        h2 { color: #2ecc71; margin-top: 40px; margin-bottom: 20px; }
+        h3 { color: #f39c12; margin-top: 30px; }
+        p { margin: 15px 0; }
+        ul, ol { margin: 15px 0; padding-left: 30px; }
+        li { margin: 8px 0; }
+        code { background: #2d2d3e; padding: 3px 8px; border-radius: 4px; font-family: 'Consolas', monospace; color: #e74c3c; }
+        .highlight { background: #34495e; padding: 15px; border-left: 4px solid #3498db; margin: 20px 0; }
+        .warning { background: #8b4513; padding: 15px; border-left: 4px solid #f39c12; margin: 20px 0; }
+        .danger { background: #721c24; padding: 15px; border-left: 4px solid #e74c3c; margin: 20px 0; }
+        .info { background: #1a5490; padding: 15px; border-left: 4px solid #3498db; margin: 20px 0; }
+        .success { background: #155724; padding: 15px; border-left: 4px solid #2ecc71; margin: 20px 0; }
+        img { max-width: 100%; border-radius: 8px; margin: 20px 0; box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+        .img-caption { text-align: center; color: #95a5a6; font-size: 0.9em; margin-top: 10px; margin-bottom: 20px; }
+        a { color: #3498db; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .solution { background: #1e3a5f; padding: 15px; margin: 15px 0; border-radius: 5px; }
+        .solution h4 { color: #2ecc71; margin-top: 0; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Sorun Giderme</h1>
+    
+    <p>CarCanReader kullanırken karşılaşabileceğiniz yaygın sorunlar ve çözümleri. Sorununuzu bulun ve adım adım çözümü uygulayın.</p>
+
+    <div style="text-align: center; margin: 20px 0;">
+        <img src="images/troubleshooting.png" alt="Sorun Giderme" style="max-width: 600px;">
+        <p class="img-caption">Yaygın sorunlar ve çözümleri</p>
+    </div>
+
+    <h2 id="connection">❌ Bağlantı Kurulamıyor</h2>
+    
+    <h3>Sorun: "COM port bulunamadı" veya "Bağlantı hatası"</h3>
+    
+    <div class="solution">
+        <h4>Çözüm 1: Adaptör Kontrolü</h4>
+        <ol>
+            <li>CAN adaptörünün USB'ye düzgün takıldığından emin olun</li>
+            <li>Farklı bir USB portu deneyin</li>
+            <li>USB kablosunun sağlam olduğunu kontrol edin</li>
+            <li>Adaptörün LED'lerinin yandığını kontrol edin (varsa)</li>
+        </ol>
+    </div>
+
+    <div class="solution">
+        <h4>Çözüm 2: Sürücü Kontrolü</h4>
+        <ol>
+            <li><strong>Device Manager'ı Açın:</strong> Windows + X > Device Manager</li>
+            <li><strong>Ports (COM & LPT) Bölümünü Kontrol Edin:</strong>
+                <ul>
+                    <li>Adaptör görünüyorsa: Port numarasını not edin</li>
+                    <li>"Bilinmeyen cihaz" görünüyorsa: Sürücüleri yükleyin</li>
+                    <li>Sarı ünlem işareti varsa: Sürücü hatası var</li>
+                </ul>
+            </li>
+            <li><strong>Sürücüleri Yükleyin:</strong>
+                <ul>
+                    <li>CANable: <a href="https://github.com/candle-usb/candleLight_fw" target="_blank">GitHub'dan indirin</a></li>
+                    <li>ELM327: Üretici web sitesinden indirin</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="solution">
+        <h4>Çözüm 3: Port Kullanımı</h4>
+        <ol>
+            <li><strong>Diğer Uygulamaları Kapatın:</strong>
+                <ul>
+                    <li>Diğer OBD yazılımları</li>
+                    <li>HyperTerminal, Putty gibi seri port programları</li>
+                    <li>Virtual COM port yazılımları</li>
+                </ul>
+            </li>
+            <li><strong>Portu Serbest Bırakın:</strong> Adaptörü çıkarıp tekrar takın</li>
+            <li><strong>Bilgisayarı Yeniden Başlatın:</strong> Gerekirse</li>
+        </ol>
+    </div>
+
+    <div class="solution">
+        <h4>Çözüm 4: Baud Rate Ayarları</h4>
+        <ol>
+            <li>Farklı Baud rate değerlerini deneyin:
+                <ul>
+                    <li>500000 (CAN High Speed - En yaygın)</li>
+                    <li>250000 (CAN Low Speed)</li>
+                    <li>125000</li>
+                    <li>115200 (ELM327 için)</li>
+                </ul>
+            </li>
+            <li>Adaptörünüzün dokümantasyonuna bakın</li>
+            <li>Bağlantı Wizard'ını kullanarak otomatik tespit yapın</li>
+        </ol>
+    </div>
+
+    <div class="warning">
+        <strong>⚠️ Dikkat:</strong> Eğer hiçbir çözüm işe yaramazsa, adaptörünüzün arızalı olma ihtimali vardır. Farklı bir adaptör deneyin.
+    </div>
+
+    <h2 id="data">📊 Veri Gelmiyor</h2>
+    
+    <h3>Sorun: "Veri okunamıyor" veya "Yanıt alınamadı"</h3>
+
+    <div class="solution">
+        <h4>Çözüm 1: Araç Kontrolü</h4>
+        <ol>
+            <li><strong>Kontak Açık mı?</strong> Aracın kontağının açık olduğundan emin olun</li>
+            <li><strong>OBD-II Port Kontrolü:</strong>
+                <ul>
+                    <li>OBD-II konektörünün düzgün takıldığını kontrol edin</li>
+                    <li>Portun fiziksel olarak sağlam olduğunu kontrol edin</li>
+                    <li>Farklı bir araçta deneyin</li>
+                </ul>
+            </li>
+            <li><strong>Motor Durumu:</strong> Bazı veriler motor çalışırken okunabilir</li>
+        </ol>
+    </div>
+
+    <div class="solution">
+        <h4>Çözüm 2: Protokol Uyumsuzluğu</h4>
+        <ol>
+            <li><strong>Protokol Tespiti:</strong> Bağlantı Wizard'ını kullanarak protokolü tespit edin</li>
+            <li><strong>Manuel Protokol Seçimi:</strong> Farklı protokol hızlarını deneyin</li>
+            <li><strong>Araç Modeli:</strong> Araç modelinizin OBD-II desteklediğini kontrol edin
+                <ul>
+                    <li>1996 ve sonrası araçlar: OBD-II zorunlu</li>
+                    <li>1996 öncesi: OBD-I veya hiç desteklemiyor olabilir</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="solution">
+        <h4>Çözüm 3: OBD Polling</h4>
+        <ol>
+            <li><strong>Dashboard Sekmesi:</strong> Dashboard sekmesine gidin</li>
+            <li><strong>OBD Başlat:</strong> "▶ Başlat" butonuna tıklayın</li>
+            <li><strong>Status Kontrolü:</strong> StatusBar'da "🟢 OBD Polling: Aktif" mesajını kontrol edin</li>
+            <li><strong>Log Kontrolü:</strong> Bağlantı sekmesindeki log'da hata mesajları var mı kontrol edin</li>
+        </ol>
+    </div>
+
+    <div class="info">
+        <strong>💡 İpucu:</strong> Bazı araçlar belirli PID'leri desteklemeyebilir. Bu normaldir. Desteklenen PID'leri görmek için "PID Auto-Scan" özelliğini kullanın.
+    </div>
+
+    <h2 id="dtc">🔍 Hata Kodu Okunamıyor</h2>
+    
+    <h3>Sorun: "DTC okuma hatası" veya "Yanıt alınamadı"</h3>
+
+    <div class="solution">
+        <h4>Çözüm 1: Bağlantı Kontrolü</h4>
+        <ol>
+            <li>Bağlantı durumunu kontrol edin (StatusBar)</li>
+            <li>Bağlantı kopmuşsa, yeniden bağlanın</li>
+            <li>Adaptörün düzgün çalıştığını doğrulayın</li>
+        </ol>
+    </div>
+
+    <div class="solution">
+        <h4>Çözüm 2: Araç Uyumluluğu</h4>
+        <ol>
+            <li><strong>OBD-II Desteği:</strong> Araç modelinizin OBD-II desteklediğini kontrol edin</li>
+            <li><strong>Mode 03/07 Desteği:</strong> Bazı araçlar bu modları desteklemeyebilir</li>
+            <li><strong>Farklı Araç:</strong> Farklı bir araçta deneyin</li>
+        </ol>
+    </div>
+
+    <div class="solution">
+        <h4>Çözüm 3: Timeout Ayarları</h4>
+        <ol>
+            <li>Ayarlar sekmesine gidin (F11)</li>
+            <li>OBD bölümündeki timeout değerlerini artırın</li>
+            <li>Varsayılan: 2000ms, 3000ms veya 5000ms deneyin</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>💡 Not:</strong> Bazı araçlar yavaş yanıt verebilir. Timeout değerini artırmak sorunu çözebilir.
+    </div>
+
+    <h2>🔧 Bilinen Sorunlar ve Çözümleri</h2>
+    
+    <h3>Sorun 1: "Uygulama başlamıyor"</h3>
+    <div class="solution">
+        <h4>Çözüm:</h4>
+        <ol>
+            <li><strong>.NET Framework Kontrolü:</strong>
+                <ul>
+                    <li>Windows + R > <code>appwiz.cpl</code></li>
+                    <li>.NET Framework 4.8'in yüklü olduğunu kontrol edin</li>
+                    <li>Yoksa: <a href="https://dotnet.microsoft.com/download/dotnet-framework/net48" target="_blank">İndirin ve yükleyin</a></li>
+                </ul>
+            </li>
+            <li><strong>Yönetici Olarak Çalıştır:</strong> Uygulamaya sağ tıklayın > "Yönetici olarak çalıştır"</li>
+            <li><strong>Antivirus Kontrolü:</strong> Antivirus yazılımının uygulamayı engellemediğini kontrol edin</li>
+        </ol>
+    </div>
+
+    <h3>Sorun 2: "Grafikler güncellenmiyor"</h3>
+    <div class="solution">
+        <h4>Çözüm:</h4>
+        <ol>
+            <li>Grafiklerin duraklatılmadığından emin olun</li>
+            <li>"Temizle" butonuna tıklayıp tekrar başlatın</li>
+            <li>OBD polling'in aktif olduğunu kontrol edin</li>
+            <li>Uygulamayı yeniden başlatın</li>
+        </ol>
+    </div>
+
+    <h3>Sorun 3: "DTC listesi boş"</h3>
+    <div class="solution">
+        <h4>Çözüm:</h4>
+        <ol>
+            <li>Bu normal olabilir - araçta hata yoksa liste boş olur</li>
+            <li>"Bekleyen DTC'leri Oku" veya "Kayıtlı DTC'leri Oku" butonuna tıklayın</li>
+            <li>Bağlantı durumunu kontrol edin</li>
+            <li>Farklı bir araçta deneyin (hata kodu olan bir araçta)</li>
+        </ol>
+    </div>
+
+    <div class="info">
+        <strong>💡 Bilgi:</strong> DTC listesi sadece araçtan okunan hata kodlarını gösterir. Tüm olası DTC kodları veritabanında mevcuttur, ancak sadece araçta tespit edilenler listede görünür.
+    </div>
+
+    <h3>Sorun 4: "CSV export çalışmıyor"</h3>
+    <div class="solution">
+        <h4>Çözüm:</h4>
+        <ol>
+            <li><strong>Klasör İzinleri:</strong> <code>data/exports/</code> klasörüne yazma izni olduğundan emin olun</li>
+            <li><strong>Disk Alanı:</strong> Yeterli disk alanı olduğunu kontrol edin</li>
+            <li><strong>Dosya Açık mı?</strong> Aynı dosya başka bir programda açık olabilir</li>
+            <li><strong>Farklı Konum:</strong> Farklı bir klasöre kaydetmeyi deneyin</li>
+        </ol>
+    </div>
+
+    <h2 id="faq">❓ Sık Sorulan Sorular (SSS)</h2>
+    
+    <h3>S: Uygulama başlamıyor, ne yapmalıyım?</h3>
+    <p><strong>C:</strong> Önce .NET Framework 4.8'in yüklü olduğunu kontrol edin. Yüklü değilse, Microsoft'un resmi sitesinden indirip yükleyin. Hala sorun varsa, uygulamayı "Yönetici olarak çalıştır" seçeneği ile açmayı deneyin.</p>
+
+    <h3>S: Veri okunmuyor, neden?</h3>
+    <p><strong>C:</strong> Birkaç olası neden var:
+    <ul>
+        <li>Aracın kontağı kapalı olabilir</li>
+        <li>OBD-II portu arızalı olabilir</li>
+        <li>Protokol uyumsuzluğu olabilir</li>
+        <li>OBD polling başlatılmamış olabilir</li>
+    </ul>
+    Önce bağlantı durumunu kontrol edin, sonra OBD polling'i başlatın.</p>
+
+    <h3>S: DTC kodları görünmüyor, neden?</h3>
+    <p><strong>C:</strong> Bu normal olabilir. DTC listesi sadece araçtan okunan hata kodlarını gösterir. Eğer araçta hata yoksa, liste boş olur. "Bekleyen DTC'leri Oku" veya "Kayıtlı DTC'leri Oku" butonlarına tıklayarak kontrol edin.</p>
+
+    <h3>S: Hangi adaptörü kullanmalıyım?</h3>
+    <p><strong>C:</strong> CANable adaptörü önerilir çünkü:
+    <ul>
+        <li>Otomatik algılanır</li>
+        <li>SLCAN protokolü ile tam uyumlu</li>
+        <li>Yüksek hızlı veri aktarımı</li>
+        <li>Açık kaynak ve güvenilir</li>
+    </ul>
+    Ancak ELM327 ve diğer uyumlu adaptörler de çalışır.</p>
+
+    <h3>S: Grafikler çok yavaş güncelleniyor, neden?</h3>
+    <p><strong>C:</strong> Bu durum genellikle:
+    <ul>
+        <li>Bilgisayar performansından kaynaklanır</li>
+        <li>Çok fazla veri noktası birikmiş olabilir</li>
+        <li>Grafikleri temizleyip tekrar başlatmayı deneyin</li>
+        <li>Zaman aralığını küçültün (30 saniye)</li>
+    </ul>
+    </p>
+
+    <h3>S: DTC'leri sildim ama tekrar görünüyor, neden?</h3>
+    <p><strong>C:</strong> Bu, sorunun çözülmediğini gösterir. DTC'leri silmek sorunu çözmez, sadece hatayı kontrol modülünden kaldırır. Eğer sorun devam ediyorsa, DTC tekrar görünecektir. Önce sorunu çözmeniz, sonra DTC'yi silmeniz gerekir.</p>
+
+    <h3>S: Windows 7'de çalışmıyor, neden?</h3>
+    <p><strong>C:</strong> Windows 7 için .NET Framework 4.8'i manuel olarak yüklemeniz gerekebilir. Ayrıca, Windows 7'nin Service Pack 1 yüklü olmalıdır. Mümkünse Windows 10 veya üzeri kullanmanız önerilir.</p>
+
+    <h2>📞 Destek</h2>
+    
+    <p>Yukarıdaki çözümler işe yaramazsa:</p>
+    <ul>
+        <li><strong>Hata Logları:</strong> F12 tuşuna basarak hata loglarını görüntüleyin</li>
+        <li><strong>Log Dosyası:</strong> <code>data/logs/Errors.log</code> dosyasını kontrol edin</li>
+        <li><strong>Teknik Detaylar:</strong> Hata mesajlarının teknik detaylarını not edin</li>
+        <li><strong>Destek:</strong> Teknik destek için log dosyasını paylaşın</li>
+    </ul>
+
+    <div class="success">
+        <strong>✅ İpucu:</strong> Çoğu sorun, bağlantıyı yeniden kurmak veya uygulamayı yeniden başlatmak ile çözülür. İlk olarak bunları deneyin.
+    </div>
+
+    <h2>📚 İlgili Konular</h2>
+    <ul>
+        <li><a href="connection.html">🔌 Araç Bağlantısı</a> - Bağlantı kurma</li>
+        <li><a href="obd-reading.html">📊 OBD Veri Okuma</a> - Veri okuma</li>
+        <li><a href="dtc-reading.html">🔍 Hata Kodu Okuma</a> - DTC okuma</li>
+        <li><a href="getting-started.html">🚀 Başlarken</a> - Kurulum ve gereksinimler</li>
+    </ul>
+</body>
+</html>
