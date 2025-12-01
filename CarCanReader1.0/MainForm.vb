@@ -61,6 +61,11 @@ Public Class MainForm
     Private _allDTCs As New List(Of DTCInfo)()
     Private _filteredDTCs As New List(Of DTCInfo)()
 
+    Private _serviceBinder As MainFormServiceBinder
+    Private _dtcGridPresenter As DtcGridPresenter
+    Private _connectionFlowManager As ConnectionFlowManager
+    Private _configChangeHandler As ConfigChangeHandler
+
     ' ========================================
     ' CONNECTION MONITORING
     ' ========================================
@@ -208,8 +213,9 @@ Public Class MainForm
 
             ' ConfigManager yükle (singleton, ilk erişimde yüklenir)
             Config.EnsureAllFolders()
+            _configChangeHandler = New ConfigChangeHandler(AddressOf SafeAddLog, obdService)
             AddHandler Config.OnConfigChanged, AddressOf HandleConfigChanged
-            
+
             ' JSON veritabanlarını yükle (CommandRepository ve VehicleProfileManager)
             ' Bu servisler unified /data/ klasörünü kullanır
             commandRepository.Load()
@@ -218,13 +224,21 @@ Public Class MainForm
             ' DTC veritabanını yükle
             DTCDatabase.Instance.LoadDatabase()
             AddLog($"📋 DTC veritabanı yüklendi: {DTCDatabase.Instance.TotalCount} kod")
-            
+
             ' DTC DataGridView kolonlarını ayarla
-            InitializeDTCGrid()
-            
+            _dtcGridPresenter = New DtcGridPresenter(dgvDTCList, txtDTCSearch, cmbDTCCategory, lblDTCCount, _allDTCs, _filteredDTCs)
+            _dtcGridPresenter.InitializeGrid()
+
             ' Grafikleri başlat
             InitializeCharts()
-            
+
+            _connectionFlowManager = New ConnectionFlowManager(
+                SerialPort1,
+                AddressOf UpdateConnectionStatus,
+                AddressOf AddLog,
+                Sub(action) SafeInvoke(action),
+                Sub(ts) _lastDataReceivedTime = ts)
+
             ' ErrorHandler event'lerine bağlan
             AddHandler ErrorHandler.Instance.OnErrorLogged, AddressOf HandleGlobalError
             AddHandler ErrorHandler.Instance.OnCriticalError, AddressOf HandleCriticalError
@@ -332,18 +346,7 @@ Public Class MainForm
     ''' </summary>
     Private Sub HandleConfigChanged(section As String)
         Try
-            SafeAddLog($"⚙️ Ayar değişti: {section}")
-            
-            ' OBD ayarları değiştiyse
-            If section = "obd" Then
-                obdService.SetPollingInterval(Config.OBD.PollingInterval)
-            End If
-            
-            ' UI ayarları değiştiyse - gelecekte kullanılabilir
-            ' If section = "ui" Then
-            '     ' Dashboard veya diğer UI bileşenleri güncellenebilir
-            ' End If
-            
+            _configChangeHandler?.HandleConfigChanged(section)
         Catch ex As Exception
             ErrorHandler.Instance.LogError(ex, "MainForm.HandleConfigChanged")
         End Try
@@ -583,147 +586,81 @@ Public Class MainForm
     ' SERVİS BAŞLATMA VE OLAY BAĞLAMA
     ' ========================================
     Private Sub InitializeServices()
-        Try
-            ' Recording butonlarını oluştur (Designer'da yoksa)
-            InitializeRecordingButtons()
-            
-            ' CANSender'a SerialPort bağla
-            canSender.SetSerialPort(SerialPort1)
-
-            ' CANSender olayları
-            AddHandler canSender.OnFrameSent, Sub(frame)
-                                                  Try
-                                                      AddLog("TX: " & frame)
-                                                  Catch : End Try
-                                              End Sub
-            AddHandler canSender.OnSendError, Sub(msg) SafeAddLog("TX hata: " & msg)
-
-            ' DashboardManager olayları (thread-safe)
-            AddHandler dashboardManager.OnRPMChanged, Sub(v)
-                                                          SafeUpdateLabel(lblRPMValue, v.ToString())
-                                                          SafeUpdateProgressBar(prgRPM, v)
-                                                          ' Grafiğe ekle
-                                                          If liveChartRPM IsNot Nothing Then
-                                                              liveChartRPM.AddDataPoint(v)
-                                                          End If
-                                                      End Sub
-            AddHandler dashboardManager.OnSpeedChanged, Sub(v)
-                                                            SafeUpdateLabel(lblSpeedValue, v.ToString() & " km/h")
-                                                            SafeUpdateProgressBar(prgSpeed, v)
-                                                            ' Grafiğe ekle
-                                                            If liveChartSpeed IsNot Nothing Then
-                                                                liveChartSpeed.AddDataPoint(v)
-                                                            End If
-                                                        End Sub
-            AddHandler dashboardManager.OnTemperatureChanged, Sub(v)
-                                                                  SafeUpdateLabel(lblTempValue, v.ToString() & " °C")
-                                                                  SafeUpdateProgressBar(prgTemp, v)
-                                                                  ' Grafiğe ekle
-                                                                  If liveChartTemp IsNot Nothing Then
-                                                                      liveChartTemp.AddDataPoint(v)
-                                                                  End If
-                                                              End Sub
-            AddHandler dashboardManager.OnDoorStateChanged, Sub(isOpen)
-                                                                SafeUpdateLabel(lblDoorValue, If(isOpen, "Açık", "Kapalı"))
-                                                                SafeUpdatePanel(pnlDoorIndicator, If(isOpen, Color.FromArgb(231, 76, 60), Color.FromArgb(46, 204, 113)))
-                                                            End Sub
-            AddHandler dashboardManager.OnLightStateChanged, Sub(isOn)
-                                                                 SafeUpdateLabel(lblLightValue, If(isOn, "Açık", "Kapalı"))
-                                                                 SafeUpdatePanel(pnlLightIndicator, If(isOn, Color.FromArgb(241, 196, 15), Color.Gray))
-                                                             End Sub
-
-            ' LearningEngine olayları
-            AddHandler learningEngine.OnByteChange, AddressOf HandleLearningByteChange
-
-            ' FilterManager olayları
-            AddHandler filterManager.OnFilterChanged, Sub(enabled, mode) SafeAddLog("Filtre: " & filterManager.GetStatusText())
-            AddHandler filterManager.OnFilterError, Sub(msg) SafeAddLog("Filtre hata: " & msg)
-
-            ' CommandRepository olayları
-            AddHandler commandRepository.OnDataLoaded, Sub() SafeAddLog("Komut verisi yüklendi.")
-            AddHandler commandRepository.OnDataSaved, Sub() SafeAddLog("Komut verisi kaydedildi.")
-            AddHandler commandRepository.OnError, Sub(msg) SafeAddLog("Komut repo hata: " & msg)
-
-            ' AdvancedUdsEngine kurulumu
-            advancedUdsEngine.SetSender(canSender)
-            AddHandler advancedUdsEngine.OnResponse, Sub(response)
-                                                         SafeAddLog("UDS: " & response.ToString())
-                                                     End Sub
-            AddHandler advancedUdsEngine.OnError, Sub(msg) SafeAddLog("UDS hata: " & msg)
-            AddHandler advancedUdsEngine.OnSessionChanged, Sub(session)
-                                                               SafeAddLog("UDS Oturum: " & session.ToString())
-                                                           End Sub
-
-            ' OBDService kurulumu
-            obdService.SetSender(canSender)
-            AddHandler obdService.OnPIDUpdated, AddressOf HandleOBDPIDUpdated
-            AddHandler obdService.OnO2SensorUpdated, AddressOf HandleO2SensorUpdated
-            AddHandler obdService.OnError, Sub(msg) SafeAddLog("OBD hata: " & msg)
-
-            ' OBD Advanced Mode olayları (Mode 02-09)
-            AddHandler obdService.OnPendingDTCReceived, AddressOf HandlePendingDTC
-            AddHandler obdService.OnStoredDTCReceived, AddressOf HandleStoredDTC
-            AddHandler obdService.OnFreezeFrameReceived, AddressOf HandleFreezeFrame
-            AddHandler obdService.OnMode06Received, AddressOf HandleMode06
-            AddHandler obdService.OnVehicleInfoReceived, AddressOf HandleVehicleInfo
-            AddHandler obdService.OnAutoScanCompleted, AddressOf HandleAutoScanComplete
-            AddHandler obdService.OnDTCCleared, Sub()
-                                                   _allDTCs.Clear()
-                                                   ApplyDTCFilter()
-                                                   SafeAddLog("✅ DTC'ler temizlendi.")
-                                               End Sub
-
-            ' DashboardManager OBD olayları
-            AddHandler dashboardManager.OnEngineLoadChanged, Sub(v) SafeUpdateLabel(lblEngineLoadValue, v.ToString("F1") & " %")
-            AddHandler dashboardManager.OnThrottleChanged, Sub(v) SafeUpdateLabel(lblThrottleValue, v.ToString("F1") & " %")
-            AddHandler dashboardManager.OnIntakeTempChanged, Sub(v) SafeUpdateLabel(lblIntakeTempValue, v.ToString() & " °C")
-            AddHandler dashboardManager.OnAmbientTempChanged, Sub(v) SafeUpdateLabel(lblAmbientTempValue, v.ToString() & " °C")
-            AddHandler dashboardManager.OnFuelLevelChanged, Sub(v) SafeUpdateLabel(lblFuelLevelValue, v.ToString("F1") & " %")
-            AddHandler dashboardManager.OnMAPChanged, Sub(v) SafeUpdateLabel(lblMAPValue, v.ToString() & " kPa")
-            AddHandler dashboardManager.OnMAFChanged, Sub(v) SafeUpdateLabel(lblMAFValue, v.ToString("F2") & " g/s")
-            AddHandler dashboardManager.OnShortFuelTrimChanged, Sub(v) SafeUpdateLabel(lblShortTrimValue, v.ToString("F1") & " %")
-            AddHandler dashboardManager.OnLongFuelTrimChanged, Sub(v) SafeUpdateLabel(lblLongTrimValue, v.ToString("F1") & " %")
-            AddHandler dashboardManager.OnBarometricChanged, Sub(v) SafeUpdateLabel(lblBarometricValue, v.ToString() & " kPa")
-            AddHandler dashboardManager.OnModuleVoltageChanged, Sub(v) SafeUpdateLabel(lblVoltageValue, v.ToString("F2") & " V")
-            AddHandler dashboardManager.OnFuelRateChanged, Sub(v) SafeUpdateLabel(lblFuelRateValue, v.ToString("F2") & " L/h")
-
-            ' ========================================
-            ' VIN AUTO PROFILE SERVİSİ KURULUMU
-            ' ========================================
-            AddHandler vehicleProfileManager.OnProfilesLoaded, Sub()
-                                                                   SafeAddLog($"🚗 Araç profilleri yüklendi ({vehicleProfileManager.GetProfileCount()} profil)")
-                                                               End Sub
-            AddHandler vehicleProfileManager.OnProfileSaved, Sub(vin)
-                                                                 SafeAddLog($"💾 Araç profili kaydedildi: {vin}")
-                                                             End Sub
-            AddHandler vehicleProfileManager.OnError, Sub(msg) SafeAddLog("❌ Profil hata: " & msg)
-
-            ' ========================================
-            ' ONLINE CAR DB SCRAPER KURULUMU
-            ' ========================================
-            onlineCarDbScraper = New OnlineCarDbScraper(commandRepository)
-            AddHandler onlineCarDbScraper.OnScrapeProgress, Sub(msg) SafeAddLog("🌐 Scraper: " & msg)
-            AddHandler onlineCarDbScraper.OnScrapeCompleted, Sub(count)
-                                                                 SafeAddLog($"✅ Scraping tamamlandı: {count} komut eklendi")
-                                                             End Sub
-            AddHandler onlineCarDbScraper.OnScrapeError, Sub(msg) SafeAddLog("❌ Scraper hata: " & msg)
-            AddHandler onlineCarDbScraper.OnDbEnrichmentStarted, Sub() SafeAddLog("📚 DB zenginleştirme başladı...")
-            AddHandler onlineCarDbScraper.OnDbEnrichmentCompleted, Sub(count)
-                                                                       SafeAddLog($"✅ DB zenginleştirme tamamlandı: {count} komut eklendi")
-                                                                   End Sub
-
-            ' ========================================
-            ' AI-FINDER (LEARNING ENGINE) KURULUMU
-            ' ========================================
-            AddHandler learningEngine.OnSignalClassifiedEx, AddressOf HandleAIFinderSignalClassified
-            AddHandler learningEngine.OnCommandPredicted, AddressOf HandleAIFinderCommandPredicted
-            AddHandler learningEngine.OnPatternDetected, AddressOf HandleAIFinderPatternDetected
-
-        Catch ex As Exception
-            ' Kritik hata - servisleri başlatamadık
-            MessageBox.Show("Servis başlatma hatası: " & ex.Message, "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
+        _serviceBinder = New MainFormServiceBinder(CreateServiceBindingContext())
+        _serviceBinder.Initialize()
     End Sub
+
+    Private Function CreateServiceBindingContext() As ServiceBindingContext
+        Dim context As New ServiceBindingContext()
+
+        context.InitializeRecordingButtons = AddressOf InitializeRecordingButtons
+        context.SerialPort = SerialPort1
+        context.CanSender = canSender
+        context.DashboardManager = dashboardManager
+        context.LearningEngine = learningEngine
+        context.FilterManager = filterManager
+        context.CommandRepository = commandRepository
+        context.AdvancedUdsEngine = advancedUdsEngine
+        context.ObdService = obdService
+        context.VehicleProfileManager = vehicleProfileManager
+        context.SafeAddLog = AddressOf SafeAddLog
+        context.SafeUpdateLabel = AddressOf SafeUpdateLabel
+        context.SafeUpdateProgressBar = AddressOf SafeUpdateProgressBar
+        context.SafeUpdatePanel = AddressOf SafeUpdatePanel
+        context.RpmLabel = lblRPMValue
+        context.SpeedLabel = lblSpeedValue
+        context.TempLabel = lblTempValue
+        context.DoorLabel = lblDoorValue
+        context.LightLabel = lblLightValue
+        context.EngineLoadLabel = lblEngineLoadValue
+        context.ThrottleLabel = lblThrottleValue
+        context.IntakeTempLabel = lblIntakeTempValue
+        context.AmbientTempLabel = lblAmbientTempValue
+        context.FuelLevelLabel = lblFuelLevelValue
+        context.MAPLabel = lblMAPValue
+        context.MAFLabel = lblMAFValue
+        context.ShortTrimLabel = lblShortTrimValue
+        context.LongTrimLabel = lblLongTrimValue
+        context.BarometricLabel = lblBarometricValue
+        context.VoltageLabel = lblVoltageValue
+        context.FuelRateLabel = lblFuelRateValue
+        context.RpmProgress = prgRPM
+        context.SpeedProgress = prgSpeed
+        context.TempProgress = prgTemp
+        context.DoorIndicator = pnlDoorIndicator
+        context.LightIndicator = pnlLightIndicator
+        context.AddRpmDataPoint = Sub(v) If liveChartRPM IsNot Nothing Then liveChartRPM.AddDataPoint(v)
+        context.AddSpeedDataPoint = Sub(v) If liveChartSpeed IsNot Nothing Then liveChartSpeed.AddDataPoint(v)
+        context.AddTempDataPoint = Sub(v) If liveChartTemp IsNot Nothing Then liveChartTemp.AddDataPoint(v)
+        context.OnLearningByteChange = AddressOf HandleLearningByteChange
+        context.OnFilterChanged = Sub(enabled, mode) SafeAddLog("Filtre: " & filterManager.GetStatusText())
+        context.OnFilterError = Sub(msg) SafeAddLog("Filtre hata: " & msg)
+        context.OnPidUpdated = AddressOf HandleOBDPIDUpdated
+        context.OnO2SensorUpdated = AddressOf HandleO2SensorUpdated
+        context.OnPendingDTC = AddressOf HandlePendingDTC
+        context.OnStoredDTC = AddressOf HandleStoredDTC
+        context.OnFreezeFrame = AddressOf HandleFreezeFrame
+        context.OnMode06 = AddressOf HandleMode06
+        context.OnVehicleInfoReceived = AddressOf HandleVehicleInfo
+        context.OnAutoScanComplete = AddressOf HandleAutoScanComplete
+        context.OnDtcCleared = Sub()
+                                   If _dtcGridPresenter IsNot Nothing Then
+                                       _dtcGridPresenter.ClearAll()
+                                   Else
+                                       _allDTCs.Clear()
+                                       _filteredDTCs.Clear()
+                                   End If
+                               End Sub
+        context.OnSessionChanged = Sub()
+                                        ' Session change handled via logging in binder
+                                    End Sub
+        context.OnCommandPredicted = AddressOf HandleAIFinderCommandPredicted
+        context.OnSignalClassified = AddressOf HandleAIFinderSignalClassified
+        context.OnPatternDetected = AddressOf HandleAIFinderPatternDetected
+        context.AssignOnlineCarDbScraper = Sub(scraper) onlineCarDbScraper = scraper
+
+        Return context
+    End Function
 
     ' LearningEngine byte değişikliği olayı
     Private Sub HandleLearningByteChange(id As Integer, byteIndex As Integer, oldValue As Byte, newValue As Byte)
@@ -873,54 +810,7 @@ Public Class MainForm
     ''' </summary>
     Private Sub InitializeDTCGrid()
         Try
-            dgvDTCList.Columns.Clear()
-            
-            ' Kod kolonu
-            Dim colCode As New DataGridViewTextBoxColumn()
-            colCode.Name = "Code"
-            colCode.HeaderText = "Kod"
-            colCode.Width = 80
-            colCode.ReadOnly = True
-            dgvDTCList.Columns.Add(colCode)
-            
-            ' Açıklama kolonu
-            Dim colDesc As New DataGridViewTextBoxColumn()
-            colDesc.Name = "Description"
-            colDesc.HeaderText = "Açıklama"
-            colDesc.Width = 380
-            colDesc.ReadOnly = True
-            dgvDTCList.Columns.Add(colDesc)
-            
-            ' Kategori kolonu
-            Dim colCat As New DataGridViewTextBoxColumn()
-            colCat.Name = "Category"
-            colCat.HeaderText = "Kategori"
-            colCat.Width = 100
-            colCat.ReadOnly = True
-            dgvDTCList.Columns.Add(colCat)
-            
-            ' Şiddet kolonu
-            Dim colSev As New DataGridViewTextBoxColumn()
-            colSev.Name = "Severity"
-            colSev.HeaderText = "Şiddet"
-            colSev.Width = 90
-            colSev.ReadOnly = True
-            dgvDTCList.Columns.Add(colSev)
-            
-            ' Durum kolonu
-            Dim colStatus As New DataGridViewTextBoxColumn()
-            colStatus.Name = "Status"
-            colStatus.HeaderText = "Durum"
-            colStatus.Width = 70
-            colStatus.ReadOnly = True
-            dgvDTCList.Columns.Add(colStatus)
-            
-            ' Event handlers
-            AddHandler dgvDTCList.CellDoubleClick, AddressOf DgvDTCList_CellDoubleClick
-            AddHandler dgvDTCList.CellFormatting, AddressOf DgvDTCList_CellFormatting
-            AddHandler txtDTCSearch.TextChanged, AddressOf TxtDTCSearch_TextChanged
-            AddHandler cmbDTCCategory.SelectedIndexChanged, AddressOf CmbDTCCategory_SelectedIndexChanged
-            
+            _dtcGridPresenter?.InitializeGrid()
         Catch ex As Exception
             Debug.WriteLine($"InitializeDTCGrid error: {ex.Message}")
         End Try
@@ -940,127 +830,9 @@ Public Class MainForm
             Debug.WriteLine($"RefreshDTCGrid error: {ex.Message}")
         End Try
     End Sub
-    
+
     Private Sub RefreshDTCGridInternal()
-        dgvDTCList.Rows.Clear()
-        
-        For Each dtc In _filteredDTCs
-            Dim rowIndex = dgvDTCList.Rows.Add()
-            Dim row = dgvDTCList.Rows(rowIndex)
-            row.Cells("Code").Value = dtc.Code
-            row.Cells("Description").Value = If(String.IsNullOrEmpty(dtc.DescriptionTR), dtc.DescriptionEN, dtc.DescriptionTR)
-            row.Cells("Category").Value = dtc.Category
-            row.Cells("Severity").Value = GetSeverityDisplayText(dtc.Severity)
-            row.Cells("Status").Value = GetStatusDisplayText(dtc)
-            row.Tag = dtc ' Store the DTCInfo object for later use
-        Next
-        
-        lblDTCCount.Text = $"{_filteredDTCs.Count} arıza kodu"
-    End Sub
-    
-    Private Function GetSeverityDisplayText(severity As String) As String
-        Select Case severity?.ToLower()
-            Case "critical" : Return "🔴 Kritik"
-            Case "high" : Return "🟠 Yüksek"
-            Case "medium" : Return "🟡 Orta"
-            Case "low" : Return "🟢 Düşük"
-            Case Else : Return "⚪ -"
-        End Select
-    End Function
-    
-    Private Function GetStatusDisplayText(dtc As DTCInfo) As String
-        If dtc.IsPending Then Return "⏳"
-        If dtc.IsStored Then Return "💾"
-        If dtc.IsPermanent Then Return "🔒"
-        Return ""
-    End Function
-    
-    ''' <summary>
-    ''' DTC filtreleme uygular
-    ''' </summary>
-    Private Sub ApplyDTCFilter()
-        Try
-            Dim searchText = If(txtDTCSearch.Text, "").ToLower().Trim()
-            Dim categoryFilter = If(cmbDTCCategory.SelectedIndex > 0, cmbDTCCategory.SelectedItem.ToString(), "")
-            
-            _filteredDTCs = _allDTCs.Where(Function(dtc)
-                ' Arama filtresi
-                Dim matchesSearch = String.IsNullOrEmpty(searchText) OrElse
-                                   dtc.Code.ToLower().Contains(searchText) OrElse
-                                   (dtc.DescriptionTR IsNot Nothing AndAlso dtc.DescriptionTR.ToLower().Contains(searchText)) OrElse
-                                   (dtc.DescriptionEN IsNot Nothing AndAlso dtc.DescriptionEN.ToLower().Contains(searchText))
-                
-                ' Kategori filtresi
-                Dim matchesCategory = String.IsNullOrEmpty(categoryFilter) OrElse
-                                     categoryFilter.StartsWith(dtc.Category, StringComparison.OrdinalIgnoreCase)
-                
-                Return matchesSearch AndAlso matchesCategory
-            End Function).ToList()
-            
-            RefreshDTCGrid()
-        Catch ex As Exception
-            Debug.WriteLine($"ApplyDTCFilter error: {ex.Message}")
-        End Try
-    End Sub
-    
-    ''' <summary>
-    ''' DTC satırına çift tıklama - detay penceresi açar
-    ''' </summary>
-    Private Sub DgvDTCList_CellDoubleClick(sender As Object, e As DataGridViewCellEventArgs)
-        Try
-            If e.RowIndex < 0 Then Return
-            
-            Dim dtc = TryCast(dgvDTCList.Rows(e.RowIndex).Tag, DTCInfo)
-            If dtc IsNot Nothing Then
-                Dim detailForm As New DTCDetailForm(dtc)
-                detailForm.ShowDialog(Me)
-            End If
-        Catch ex As Exception
-            Debug.WriteLine($"DgvDTCList_CellDoubleClick error: {ex.Message}")
-        End Try
-    End Sub
-    
-    ''' <summary>
-    ''' Şiddete göre satır renklendirme
-    ''' </summary>
-    Private Sub DgvDTCList_CellFormatting(sender As Object, e As DataGridViewCellFormattingEventArgs)
-        Try
-            If e.RowIndex < 0 Then Return
-            
-            Dim dtc = TryCast(dgvDTCList.Rows(e.RowIndex).Tag, DTCInfo)
-            If dtc Is Nothing Then Return
-            
-            Dim row = dgvDTCList.Rows(e.RowIndex)
-            
-            Select Case dtc.Severity?.ToLower()
-                Case "critical"
-                    row.DefaultCellStyle.ForeColor = Color.FromArgb(231, 76, 60)
-                Case "high"
-                    row.DefaultCellStyle.ForeColor = Color.FromArgb(230, 126, 34)
-                Case "medium"
-                    row.DefaultCellStyle.ForeColor = Color.FromArgb(241, 196, 15)
-                Case "low"
-                    row.DefaultCellStyle.ForeColor = Color.FromArgb(46, 204, 113)
-                Case Else
-                    row.DefaultCellStyle.ForeColor = Color.FromArgb(220, 220, 240)
-            End Select
-        Catch ex As Exception
-            ' Ignore formatting errors
-        End Try
-    End Sub
-    
-    ''' <summary>
-    ''' DTC arama kutusu değiştiğinde
-    ''' </summary>
-    Private Sub TxtDTCSearch_TextChanged(sender As Object, e As EventArgs)
-        ApplyDTCFilter()
-    End Sub
-    
-    ''' <summary>
-    ''' Kategori filtresi değiştiğinde
-    ''' </summary>
-    Private Sub CmbDTCCategory_SelectedIndexChanged(sender As Object, e As EventArgs)
-        ApplyDTCFilter()
+        _dtcGridPresenter?.RefreshGrid()
     End Sub
 
     ''' <summary>
@@ -3383,29 +3155,7 @@ Public Class MainForm
     ''' </summary>
     Private Sub CheckAndShowWizardIfNeeded()
         Try
-            ' Son bağlantı bilgilerini kontrol et
-            Dim lastPort = Config.Serial.LastPort
-            Dim lastBaudRate = Config.Serial.LastBaudRate
-            Dim lastProtocol = Config.Serial.LastProtocol
-            Dim lastSuccess = Config.Serial.LastConnectionSuccessful
-
-            ' Eğer kayıtlı bağlantı yoksa veya başarısızsa wizard göster
-            If String.IsNullOrEmpty(lastPort) OrElse Not lastSuccess Then
-                ' İlk açılış - wizard göster
-                Dim result = MessageBox.Show(
-                    "Bağlantı kurulum sihirbazını başlatmak ister misiniz?" & vbCrLf &
-                    "Wizard size adım adım bağlantı kurmanızda yardımcı olacak.",
-                    "Bağlantı Wizard'ı",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question)
-
-                If result = DialogResult.Yes Then
-                    ShowConnectionWizard()
-                End If
-            Else
-                ' Kayıtlı bağlantı var - otomatik bağlanmayı dene
-                TryQuickConnect()
-            End If
+            _connectionFlowManager?.CheckAndShowWizardIfNeeded()
         Catch ex As Exception
             ErrorHandler.Instance.LogError(ex, "MainForm.CheckAndShowWizardIfNeeded")
         End Try
@@ -3416,21 +3166,9 @@ Public Class MainForm
     ''' </summary>
     Private Sub ShowConnectionWizard()
         Try
-            Dim wizard As New ConnectionWizard()
-            If wizard.ShowDialog() = DialogResult.OK Then
-                ' Wizard'dan gelen bilgilerle bağlan
-                If wizard.ConnectionSuccessful AndAlso Not String.IsNullOrEmpty(wizard.SelectedPort) Then
-                    ConnectWithWizardSettings(wizard.SelectedPort, wizard.SelectedBaudRate, wizard.DetectedProtocolName)
-                    
-                    ' Bağlantı bilgilerini kaydet
-                    If wizard.ConnectionSuccessful Then
-                        SaveConnectionInfo(wizard.SelectedPort, wizard.SelectedBaudRate, wizard.DetectedProtocolName)
-                    End If
-                End If
-            End If
+            _connectionFlowManager?.ShowConnectionWizard()
         Catch ex As Exception
             ErrorHandler.Instance.LogError(ex, "MainForm.ShowConnectionWizard")
-            MessageBox.Show($"Wizard açılırken hata oluştu: {ex.Message}", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 
@@ -3439,42 +3177,12 @@ Public Class MainForm
     ''' </summary>
     Private Sub TryQuickConnect()
         Try
-            Dim lastPort = Config.Serial.LastPort
-            Dim lastBaudRate = Config.Serial.LastBaudRate
-            Dim lastProtocol = Config.Serial.LastProtocol
-
-            If String.IsNullOrEmpty(lastPort) Then
-                Return
-            End If
-
-            AddLog($"🔄 Son bağlantı deneniyor: {lastPort} ({lastBaudRate})")
-
-            ' 5 saniye timeout ile bağlan
-            Dim connectTask = Task.Run(Sub()
-                                           Try
-                                               If SerialPort1 IsNot Nothing AndAlso SerialPort1.IsOpen Then
-                                                   SerialPort1.Close()
-                                                   Threading.Thread.Sleep(100)
-                                               End If
-
-                                               SerialPort1.PortName = lastPort
-                                               SerialPort1.BaudRate = lastBaudRate
-                                               SerialPort1.ReadTimeout = 2000
-                                               SerialPort1.WriteTimeout = 2000
-                                               SerialPort1.DtrEnable = True
-                                               SerialPort1.RtsEnable = True
-
-                                               SerialPort1.Open()
-                                               Threading.Thread.Sleep(100)
-                                               SerialPort1.WriteLine("O")
-                                               Threading.Thread.Sleep(100)
-
-                                               ' Başarılı
-                                               Me.Invoke(Sub()
-                                                            UpdateConnectionStatus(True, lastPort, lastBaudRate.ToString())
-                                                            _lastDataReceivedTime = DateTime.Now
-                                                            AddLog($"✅ Hızlı bağlantı başarılı: {lastPort}")
-                                                        End Sub)
+            _connectionFlowManager?.TryQuickConnect()
+        Catch ex As Exception
+            ErrorHandler.Instance.LogError(ex, "MainForm.TryQuickConnect")
+            SuggestWizard("Hızlı bağlantı hatası")
+        End Try
+    End Sub)
                                            Catch ex As Exception
                                                ' Başarısız - wizard öner
                                                Me.Invoke(Sub()
@@ -3503,38 +3211,7 @@ Public Class MainForm
     ''' </summary>
     Private Sub ConnectWithWizardSettings(port As String, baudRate As Integer, protocol As String)
         Try
-            If SerialPort1 IsNot Nothing AndAlso SerialPort1.IsOpen Then
-                SerialPort1.Close()
-                Threading.Thread.Sleep(100)
-            End If
-
-            SerialPort1.PortName = port
-            SerialPort1.BaudRate = baudRate
-            SerialPort1.ReadTimeout = 2000
-            SerialPort1.WriteTimeout = 2000
-            SerialPort1.DtrEnable = True
-            SerialPort1.RtsEnable = True
-
-            SerialPort1.Open()
-            Threading.Thread.Sleep(100)
-            SerialPort1.WriteLine("O")
-            Threading.Thread.Sleep(100)
-
-            ' Protokol hızını ayarla (varsa)
-            If Not String.IsNullOrEmpty(protocol) Then
-                If protocol.Contains("500K") Then
-                    SerialPort1.WriteLine("S5")
-                ElseIf protocol.Contains("250K") Then
-                    SerialPort1.WriteLine("S3")
-                ElseIf protocol.Contains("125K") Then
-                    SerialPort1.WriteLine("S2")
-                End If
-            End If
-
-            UpdateConnectionStatus(True, port, baudRate.ToString())
-            _lastDataReceivedTime = DateTime.Now ' İlk bağlantı zamanını kaydet
-            AddLog($"✅ Wizard ile bağlandı: {port} ({baudRate}, {protocol})")
-
+            _connectionFlowManager?.ConnectWithWizardSettings(port, baudRate, protocol)
         Catch ex As Exception
             ErrorHandler.Instance.LogError(ex, "MainForm.ConnectWithWizardSettings")
             UpdateConnectionStatus(False, "", "")
@@ -3548,12 +3225,7 @@ Public Class MainForm
     ''' </summary>
     Private Sub SaveConnectionInfo(port As String, baudRate As Integer, protocol As String)
         Try
-            Config.Serial.LastPort = port
-            Config.Serial.LastBaudRate = baudRate
-            Config.Serial.LastProtocol = protocol
-            Config.Serial.LastConnectionSuccessful = True
-            Config.Serial.LastConnectionTime = DateTime.Now
-            Config.Save()
+            _connectionFlowManager?.SaveConnectionInfo(port, baudRate, protocol)
         Catch ex As Exception
             ErrorHandler.Instance.LogError(ex, "MainForm.SaveConnectionInfo")
         End Try
@@ -3586,16 +3258,7 @@ Public Class MainForm
     ''' </summary>
     Private Sub SuggestWizard(reason As String)
         Try
-            Dim result = MessageBox.Show(
-                $"Bağlantı kurulamadı: {reason}" & vbCrLf & vbCrLf &
-                "Bağlantı kurulum sihirbazını kullanmak ister misiniz?",
-                "Bağlantı Hatası",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question)
-
-            If result = DialogResult.Yes Then
-                ShowConnectionWizard()
-            End If
+            _connectionFlowManager?.SuggestWizard(reason)
         Catch ex As Exception
             ErrorHandler.Instance.LogError(ex, "MainForm.SuggestWizard")
         End Try
