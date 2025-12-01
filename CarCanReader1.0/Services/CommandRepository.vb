@@ -30,6 +30,8 @@
 Imports Newtonsoft.Json.Linq
 Imports System.IO
 Imports System.Windows.Forms
+Imports Services.Interfaces
+Imports Services.Providers
 
 Namespace Services
 
@@ -82,6 +84,9 @@ Public Class CommandRepository
     ' JSON dosya yolu (absolute path)
     Private _jsonFilePath As String
 
+    ' JSON sağlayıcısı (dosya, bellek vb.)
+    Private _provider As ICommandsProvider
+
     ' Veri değişti mi flag
     Private _hasUnsavedChanges As Boolean = False
 
@@ -113,9 +118,7 @@ Public Class CommandRepository
     ''' Unified /data/ folder kullanır
     ''' </summary>
     Public Sub New()
-        _jsonFilePath = GetUnifiedDataPath(DEFAULT_JSON_FILE)
-        _commandsData = New JObject()
-        EnsureDataFolderExists()
+        Me.New(New FileCommandsProvider(GetUnifiedDataPath(DEFAULT_JSON_FILE)))
     End Sub
 
     ''' <summary>
@@ -123,11 +126,22 @@ Public Class CommandRepository
     ''' </summary>
     ''' <param name="jsonFilePath">JSON dosya yolu (relative ise /data/ altına yerleştirilir)</param>
     Public Sub New(jsonFilePath As String)
+        Dim resolvedPath As String
         If Path.IsPathRooted(jsonFilePath) Then
-            _jsonFilePath = jsonFilePath
+            resolvedPath = jsonFilePath
         Else
-            _jsonFilePath = GetUnifiedDataPath(jsonFilePath)
+            resolvedPath = GetUnifiedDataPath(jsonFilePath)
         End If
+        Me.New(New FileCommandsProvider(resolvedPath))
+    End Sub
+
+    ''' <summary>
+    ''' Sağlayıcı tabanlı CommandRepository oluşturur
+    ''' </summary>
+    Public Sub New(provider As ICommandsProvider)
+        If provider Is Nothing Then Throw New ArgumentNullException(NameOf(provider))
+        _provider = provider
+        _jsonFilePath = provider.GetLocation()
         _commandsData = New JObject()
         EnsureDataFolderExists()
     End Sub
@@ -150,8 +164,16 @@ Public Class CommandRepository
     ''' </summary>
     Private Sub EnsureDataFolderExists()
         Try
+            If _provider IsNot Nothing AndAlso Not TypeOf _provider Is FileCommandsProvider Then
+                Return
+            End If
+
+            If String.IsNullOrWhiteSpace(_jsonFilePath) Then
+                Return
+            End If
+
             Dim dataFolder As String = Path.GetDirectoryName(_jsonFilePath)
-            If Not Directory.Exists(dataFolder) Then
+            If Not String.IsNullOrWhiteSpace(dataFolder) AndAlso Not Directory.Exists(dataFolder) Then
                 Directory.CreateDirectory(dataFolder)
                 Debug.WriteLine($"Data klasörü oluşturuldu: {dataFolder}")
             End If
@@ -193,6 +215,10 @@ Public Class CommandRepository
             Else
                 _jsonFilePath = GetUnifiedDataPath(value)
             End If
+
+            If _provider Is Nothing OrElse TypeOf _provider Is FileCommandsProvider Then
+                _provider = New FileCommandsProvider(_jsonFilePath)
+            End If
         End Set
     End Property
 
@@ -224,17 +250,32 @@ Public Class CommandRepository
     Private Sub EnsureJsonExists()
         SyncLock _lock
             Try
-                EnsureDataFolderExists()
-                
-                If Not File.Exists(_jsonFilePath) Then
-                    ' Boş ama valid JSON oluştur
-                    AtomicWrite(_jsonFilePath, EMPTY_JSON_TEMPLATE)
-                    Debug.WriteLine($"JSON dosyası oluşturuldu: {_jsonFilePath}")
+                If _provider IsNot Nothing Then
+                    EnsureProviderDataExists()
+                Else
+                    EnsureDataFolderExists()
+
+                    If Not File.Exists(_jsonFilePath) Then
+                        ' Boş ama valid JSON oluştur
+                        AtomicWrite(_jsonFilePath, EMPTY_JSON_TEMPLATE)
+                        Debug.WriteLine($"JSON dosyası oluşturuldu: {_jsonFilePath}")
+                    End If
                 End If
             Catch ex As Exception
                 RaiseEvent OnError("JSON dosyası oluşturulamadı: " & ex.Message)
             End Try
         End SyncLock
+    End Sub
+
+    ''' <summary>
+    ''' Sağlayıcı tabanlı depoyu boş bir JSON ile hazırlar
+    ''' </summary>
+    Private Sub EnsureProviderDataExists()
+        If _provider Is Nothing Then Return
+        If _provider.Exists() Then Return
+
+        Dim emptyObj As JObject = JObject.Parse(EMPTY_JSON_TEMPLATE)
+        _provider.Save(emptyObj)
     End Sub
 
     ''' <summary>
@@ -245,6 +286,19 @@ Public Class CommandRepository
             Try
                 ' Dosyanın var olmasını sağla
                 EnsureJsonExists()
+
+                If _provider IsNot Nothing Then
+                    Dim loaded As JObject = _provider.Load()
+                    If loaded Is Nothing Then
+                        loaded = JObject.Parse(EMPTY_JSON_TEMPLATE)
+                    End If
+
+                    _commandsData = loaded
+                    _hasUnsavedChanges = False
+                    Debug.WriteLine($"CommandRepository loaded from provider: {_provider.GetLocation()}")
+                    RaiseEvent OnDataLoaded()
+                    Return
+                End If
 
                 ' JSON dosyasını oku
                 Dim jsonText As String = File.ReadAllText(_jsonFilePath)
@@ -331,13 +385,20 @@ Public Class CommandRepository
                     Return
                 End If
 
-                ' ATOMIC WRITE
-                If AtomicWrite(_jsonFilePath, jsonText) Then
+                If _provider IsNot Nothing Then
+                    _provider.Save(_commandsData)
                     _hasUnsavedChanges = False
-                    Debug.WriteLine($"CommandRepository saved: {_jsonFilePath}")
+                    Debug.WriteLine($"CommandRepository saved via provider: {_provider.GetLocation()}")
                     RaiseEvent OnDataSaved()
                 Else
-                    RaiseEvent OnError("Atomic write başarısız - mevcut dosya korundu")
+                    ' ATOMIC WRITE
+                    If AtomicWrite(_jsonFilePath, jsonText) Then
+                        _hasUnsavedChanges = False
+                        Debug.WriteLine($"CommandRepository saved: {_jsonFilePath}")
+                        RaiseEvent OnDataSaved()
+                    Else
+                        RaiseEvent OnError("Atomic write başarısız - mevcut dosya korundu")
+                    End If
                 End If
 
             Catch ex As Exception
@@ -443,14 +504,26 @@ Public Class CommandRepository
     ''' </summary>
     Public Sub SaveAs(filePath As String)
         SyncLock _lock
-            Dim originalPath = _jsonFilePath
+            Dim targetPath As String
             If Path.IsPathRooted(filePath) Then
-                _jsonFilePath = filePath
+                targetPath = filePath
             Else
-                _jsonFilePath = GetUnifiedDataPath(filePath)
+                targetPath = GetUnifiedDataPath(filePath)
             End If
-            Save()
-            _jsonFilePath = originalPath
+
+            Dim originalPath = _jsonFilePath
+            Dim originalProvider = _provider
+
+            If originalProvider Is Nothing OrElse TypeOf originalProvider Is FileCommandsProvider Then
+                _jsonFilePath = targetPath
+                _provider = New FileCommandsProvider(targetPath)
+                Save()
+                _jsonFilePath = originalPath
+                _provider = originalProvider
+            Else
+                Dim tempProvider As New FileCommandsProvider(targetPath)
+                tempProvider.Save(_commandsData)
+            End If
         End SyncLock
     End Sub
 
@@ -459,12 +532,26 @@ Public Class CommandRepository
     ''' </summary>
     Public Sub LoadFrom(filePath As String)
         SyncLock _lock
+            Dim sourcePath As String
             If Path.IsPathRooted(filePath) Then
-                _jsonFilePath = filePath
+                sourcePath = filePath
             Else
-                _jsonFilePath = GetUnifiedDataPath(filePath)
+                sourcePath = GetUnifiedDataPath(filePath)
             End If
-            Load()
+
+            If _provider Is Nothing OrElse TypeOf _provider Is FileCommandsProvider Then
+                _jsonFilePath = sourcePath
+                _provider = New FileCommandsProvider(sourcePath)
+                Load()
+            Else
+                Dim tempProvider As New FileCommandsProvider(sourcePath)
+                Dim loaded = tempProvider.Load()
+                If loaded IsNot Nothing Then
+                    _commandsData = loaded
+                    _hasUnsavedChanges = False
+                    RaiseEvent OnDataLoaded()
+                End If
+            End If
         End SyncLock
     End Sub
 
