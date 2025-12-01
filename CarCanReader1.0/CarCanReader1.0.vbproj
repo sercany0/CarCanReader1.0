@@ -135,6 +135,12 @@
     <!-- Models -->
     <Compile Include="Models\CANFrame.vb" />
     <!-- Services -->
+    <Compile Include="Services\Interfaces\ICommandsProvider.vb" />
+    <Compile Include="Services\Interfaces\IConfigProvider.vb" />
+    <Compile Include="Services\Providers\FileCommandsProvider.vb" />
+    <Compile Include="Services\Providers\FileConfigProvider.vb" />
+    <Compile Include="Services\Providers\InMemoryCommandsProvider.vb" />
+    <Compile Include="Services\Providers\InMemoryConfigProvider.vb" />
     <Compile Include="Services\CANParser.vb" />
     <Compile Include="Services\Interfaces\ICanSender.vb" />
     <Compile Include="Services\CANSender.vb" />

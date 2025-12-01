@@ -17,6 +17,8 @@ Imports System.IO
 Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
 Imports System.Windows.Forms
+Imports Services.Interfaces
+Imports Services.Providers
 
 Namespace Services
 
@@ -310,8 +312,18 @@ Namespace Services
             End Get
         End Property
 
+        Public Shared Function CreateWithProvider(provider As IConfigProvider) As ConfigManager
+            Return New ConfigManager(provider)
+        End Function
+
         Private Sub New()
-            _configFilePath = GetConfigFilePath()
+            Me.New(New FileConfigProvider(GetConfigFilePath()))
+        End Sub
+
+        Private Sub New(provider As IConfigProvider)
+            If provider Is Nothing Then Throw New ArgumentNullException(NameOf(provider))
+            _configProvider = provider
+            _configFilePath = provider.GetLocation()
             _config = New AppConfiguration()
             Load()
         End Sub
@@ -355,6 +367,7 @@ Namespace Services
         Private _config As AppConfiguration
         Private ReadOnly _fileLock As New Object()
         Private _hasUnsavedChanges As Boolean = False
+        Private ReadOnly _configProvider As IConfigProvider
 
 #End Region
 
@@ -450,9 +463,11 @@ Namespace Services
         ''' </summary>
         Private Sub EnsureDataFolder()
             Try
-                Dim dir = Path.GetDirectoryName(_configFilePath)
-                If Not Directory.Exists(dir) Then
-                    Directory.CreateDirectory(dir)
+                If _configProvider Is Nothing OrElse TypeOf _configProvider Is FileConfigProvider Then
+                    Dim dir = Path.GetDirectoryName(_configFilePath)
+                    If Not String.IsNullOrWhiteSpace(dir) AndAlso Not Directory.Exists(dir) Then
+                        Directory.CreateDirectory(dir)
+                    End If
                 End If
             Catch ex As Exception
                 ErrorHandler.Instance.LogError(ex, "ConfigManager.EnsureDataFolder")
@@ -470,6 +485,31 @@ Namespace Services
             SyncLock _fileLock
                 Try
                     EnsureDataFolder()
+
+                    If _configProvider IsNot Nothing Then
+                        Dim raw As JObject = _configProvider.LoadConfig()
+
+                        If raw Is Nothing OrElse Not raw.HasValues Then
+                            _config = New AppConfiguration()
+                            Save()
+                            RaiseEvent OnConfigLoaded()
+                            Return
+                        End If
+
+                        Dim loadedFromProvider = raw.ToObject(Of AppConfiguration)()
+                        If loadedFromProvider IsNot Nothing Then
+                            _config = loadedFromProvider
+                            _config.ValidateAll()
+                        Else
+                            _config = New AppConfiguration()
+                        End If
+
+                        _hasUnsavedChanges = False
+                        RaiseEvent OnConfigLoaded()
+
+                        Debug.WriteLine($"ConfigManager loaded via provider: {_configProvider.GetLocation()}")
+                        Return
+                    End If
 
                     If Not File.Exists(_configFilePath) Then
                         ' Dosya yoksa varsayılanlarla oluştur
@@ -527,15 +567,23 @@ Namespace Services
 
                     Dim jsonText = JsonConvert.SerializeObject(_config, Formatting.Indented)
 
-                    ' Atomic write
-                    If AtomicWrite(_configFilePath, jsonText) Then
+                    If _configProvider IsNot Nothing Then
+                        _configProvider.SaveConfig(JObject.Parse(jsonText))
                         _hasUnsavedChanges = False
                         RaiseEvent OnConfigSaved()
-                        Debug.WriteLine($"ConfigManager saved: {_configFilePath}")
+                        Debug.WriteLine($"ConfigManager saved via provider: {_configProvider.GetLocation()}")
                         Return True
                     Else
-                        ErrorHandler.Instance.LogError("Config atomic write başarısız", "ConfigManager")
-                        Return False
+                        ' Atomic write
+                        If AtomicWrite(_configFilePath, jsonText) Then
+                            _hasUnsavedChanges = False
+                            RaiseEvent OnConfigSaved()
+                            Debug.WriteLine($"ConfigManager saved: {_configFilePath}")
+                            Return True
+                        Else
+                            ErrorHandler.Instance.LogError("Config atomic write başarısız", "ConfigManager")
+                            Return False
+                        End If
                     End If
 
                 Catch ex As Exception
