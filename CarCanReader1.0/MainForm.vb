@@ -40,6 +40,11 @@ Public Class MainForm
     Private _isClosing As Boolean = False
     Private ReadOnly _uiLock As New Object()
     Private ReadOnly _logRateLimiter As New Services.RateLimiter(10) ' Log için 10ms minimum aralık
+    Private ReadOnly _logQueue As New ConcurrentQueue(Of String)
+    Private _logFlushTimer As System.Windows.Forms.Timer = Nothing
+    Private Const MAX_LOG_ITEMS As Integer = 5000
+    Private Const LOG_FLUSH_BATCH_SIZE As Integer = 200
+    Private Const LOG_FLUSH_INTERVAL_MS As Integer = 50
     
     ' ========================================
     ' CONFIGURATION MANAGER (Merkezi Ayarlar)
@@ -137,18 +142,64 @@ Public Class MainForm
     Private Sub SafeAddLog(message As String)
         If _isClosing Then Return
         If lstLog Is Nothing OrElse lstLog.IsDisposed Then Return
-        
+
+        AddLog(message)
+    End Sub
+
+    Private Sub ConfigureLogBuffering()
+        If _logFlushTimer IsNot Nothing Then Return
+
+        _logFlushTimer = New System.Windows.Forms.Timer()
+        _logFlushTimer.Interval = LOG_FLUSH_INTERVAL_MS
+        AddHandler _logFlushTimer.Tick, AddressOf LogFlushTimer_Tick
+        _logFlushTimer.Start()
+    End Sub
+
+    Private Sub LogFlushTimer_Tick(sender As Object, e As EventArgs)
+        FlushLogQueue()
+    End Sub
+
+    Private Sub FlushLogQueue()
+        If _isClosing Then Return
+        If lstLog Is Nothing OrElse lstLog.IsDisposed Then Return
+
+        Dim batch As New List(Of String)()
+        Dim nextLog As String = Nothing
+
+        While batch.Count < LOG_FLUSH_BATCH_SIZE AndAlso _logQueue.TryDequeue(nextLog)
+            batch.Add(nextLog)
+        End While
+
+        If batch.Count = 0 Then Return
+
+        AppendLogBatch(batch)
+    End Sub
+
+    Private Sub AppendLogBatch(batch As List(Of String))
+        If lstLog Is Nothing OrElse lstLog.IsDisposed Then Return
+
+        If lstLog.InvokeRequired Then
+            lstLog.BeginInvoke(Sub() AppendLogBatch(batch))
+            Return
+        End If
+
+        lstLog.BeginUpdate()
         Try
-            If lstLog.InvokeRequired Then
-                lstLog.BeginInvoke(Sub()
-                                       If Not lstLog.IsDisposed Then AddLog(message)
-                                   End Sub)
-            Else
-                AddLog(message)
-            End If
-        Catch ex As ObjectDisposedException
-        Catch ex As InvalidOperationException
+            For Each line In batch
+                lstLog.Items.Add(line)
+            Next
+            TrimLogIfNeeded()
+        Finally
+            lstLog.EndUpdate()
         End Try
+    End Sub
+
+    Private Sub TrimLogIfNeeded()
+        If MAX_LOG_ITEMS <= 0 Then Return
+
+        While lstLog.Items.Count > MAX_LOG_ITEMS
+            lstLog.Items.RemoveAt(0)
+        End While
     End Sub
 
     ''' <summary>
@@ -208,6 +259,8 @@ Public Class MainForm
     ' Uygulama açıldığında çalışacak
     Private Sub MainForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Try
+            ConfigureLogBuffering()
+
             ' Servisleri başlat
             InitializeServices()
 
@@ -403,7 +456,17 @@ Public Class MainForm
     Private Sub MainForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
         Try
             _isClosing = True
-            
+
+            If _logFlushTimer IsNot Nothing Then
+                Try
+                    RemoveHandler _logFlushTimer.Tick, AddressOf LogFlushTimer_Tick
+                    _logFlushTimer.Stop()
+                    _logFlushTimer.Dispose()
+                    _logFlushTimer = Nothing
+                Catch
+                End Try
+            End If
+
             ' ErrorHandler event'lerini kaldır
             Try
                 RemoveHandler ErrorHandler.Instance.OnErrorLogged, AddressOf HandleGlobalError
@@ -1921,7 +1984,16 @@ Public Class MainForm
     ' Log yazmak için yardımcı fonksiyon
     Private Sub AddLog(message As String)
         Dim satir As String = DateTime.Now.ToString("HH:mm:ss") & " - " & message
-        lstLog.Items.Add(satir)
+
+        _logQueue.Enqueue(satir)
+
+        If _logFlushTimer Is Nothing AndAlso Not _isClosing Then
+            ConfigureLogBuffering()
+        End If
+
+        If lstLog IsNot Nothing AndAlso Not lstLog.IsDisposed Then
+            FlushLogQueue()
+        End If
     End Sub
     Private Sub SerialPort1_DataReceived(sender As Object, e As IO.Ports.SerialDataReceivedEventArgs) Handles SerialPort1.DataReceived
         Try
