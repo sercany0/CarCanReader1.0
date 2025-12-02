@@ -16,6 +16,8 @@ Imports System.IO
 Imports System.Collections.Concurrent
 Imports System.Text
 Imports System.Windows.Forms
+Imports System.Threading
+Imports System.Threading.Tasks
 
 Namespace Services
 
@@ -167,6 +169,9 @@ Namespace Services
             _errorLog = New ConcurrentQueue(Of ErrorLogEntry)()
             _logFilePath = GetLogFilePath()
             EnsureLogDirectory()
+            _writeQueue = New BlockingCollection(Of ErrorLogEntry)(New ConcurrentQueue(Of ErrorLogEntry)())
+            _writerCts = New CancellationTokenSource()
+            _writerTask = Task.Factory.StartNew(AddressOf WriteLoop, _writerCts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default)
         End Sub
 
 #End Region
@@ -206,6 +211,9 @@ Namespace Services
         Private ReadOnly _fileLock As New Object()
         Private _totalErrorCount As Long = 0
         Private _totalWarningCount As Long = 0
+        Private ReadOnly _writeQueue As BlockingCollection(Of ErrorLogEntry)
+        Private _writerCts As CancellationTokenSource
+        Private _writerTask As Task
 
 #End Region
 
@@ -421,8 +429,14 @@ Namespace Services
                 _errorLog.TryDequeue(discarded)
             End While
 
-            ' Dosyaya yaz (async)
-            Task.Run(Sub() WriteToFile(entry))
+            ' Dosyaya yaz (async, ardışık)
+            Try
+                If Not _writeQueue.IsAddingCompleted Then
+                    _writeQueue.Add(entry)
+                End If
+            Catch ex As InvalidOperationException
+                ' Queue kapandı, shutdown sırasında olabilir
+            End Try
 
             ' Debug output
             Debug.WriteLine(entry.FullLogLine)
@@ -431,6 +445,21 @@ Namespace Services
             If entry.Severity >= ErrorSeverity.Error Then
                 RaiseEvent OnErrorLogged(entry)
             End If
+        End Sub
+
+        ''' <summary>
+        ''' Kuyruktaki entry'leri ardışık olarak dosyaya yazar
+        ''' </summary>
+        Private Sub WriteLoop()
+            Try
+                For Each entry In _writeQueue.GetConsumingEnumerable(_writerCts.Token)
+                    WriteToFile(entry)
+                Next
+            Catch ex As OperationCanceledException
+                ' Kapanış esnasında beklenen durum
+            Catch ex As Exception
+                Debug.WriteLine($"WriteLoop error: {ex.Message}")
+            End Try
         End Sub
 
         ''' <summary>
@@ -469,6 +498,33 @@ Namespace Services
                 End If
             Catch ex As Exception
                 Debug.WriteLine($"CheckLogFileSize error: {ex.Message}")
+            End Try
+        End Sub
+
+        ''' <summary>
+        ''' Arka plan yazıcısını durdurur ve kuyrukta bekleyen logları flush eder
+        ''' </summary>
+        Public Sub Shutdown(Optional flushTimeoutMs As Integer = 500)
+            SyncLock _fileLock
+                If _writeQueue Is Nothing OrElse _writeQueue.IsAddingCompleted Then
+                    Return
+                End If
+
+                _writeQueue.CompleteAdding()
+                If _writerCts IsNot Nothing AndAlso Not _writerCts.IsCancellationRequested Then
+                    _writerCts.CancelAfter(flushTimeoutMs)
+                End If
+            End SyncLock
+
+            Try
+                Task.WaitAll(New Task() {_writerTask}, flushTimeoutMs)
+            Catch ex As Exception
+                Debug.WriteLine($"ErrorHandler shutdown wait error: {ex.Message}")
+            Finally
+                Try
+                    _writerCts?.Dispose()
+                Catch
+                End Try
             End Try
         End Sub
 
