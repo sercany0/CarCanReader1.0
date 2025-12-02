@@ -43,7 +43,11 @@ Namespace Services.Plugins
 
         Private Async Function LoadPluginAsync(dllPath As String, cancellationToken As CancellationToken) As Task
             Try
-                Dim assembly = Assembly.LoadFrom(dllPath)
+                ' Assemblies LoadFrom ile yüklendiğinde Windows'ta dosyayı kilitler. Plugin DLL'lerinin
+                ' geliştirme sırasında yeniden derlenebilmesi için içerikleri belleğe alıp buradan yükleyerek
+                ' kilidi engelliyoruz.
+                Dim assemblyBytes = File.ReadAllBytes(dllPath)
+                Dim assembly = Assembly.Load(assemblyBytes)
                 Dim pluginTypes = assembly.GetTypes().Where(Function(t) GetType(ICommandPlugin).IsAssignableFrom(t) AndAlso Not t.IsAbstract).ToArray()
 
                 For Each pluginType In pluginTypes
