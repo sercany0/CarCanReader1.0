@@ -471,6 +471,7 @@ Public Class MainForm
             Try
                 RemoveHandler ErrorHandler.Instance.OnErrorLogged, AddressOf HandleGlobalError
                 RemoveHandler ErrorHandler.Instance.OnCriticalError, AddressOf HandleCriticalError
+                ErrorHandler.Instance.Shutdown()
             Catch
             End Try
             
