@@ -52,7 +52,8 @@ Namespace Services
 
         Private _processingThread As Thread
         Private _isProcessing As Boolean = False
-        Private ReadOnly _processingCts As New CancellationTokenSource()
+        Private _processingCts As CancellationTokenSource = New CancellationTokenSource()
+        Private ReadOnly _bufferSignal As New AutoResetEvent(False)
 
         ' Ayarlar - Varsayılanlar ConfigManager'dan yüklenir (Initialize'da)
         Private _portName As String = ""
@@ -333,6 +334,8 @@ Namespace Services
                     Next
                 End SyncLock
 
+                _bufferSignal.Set()
+
             Catch ex As Exception
                 Debug.WriteLine($"DataReceived error: {ex.Message}")
             End Try
@@ -353,7 +356,14 @@ Namespace Services
             If _isProcessing Then Return
 
             _isProcessing = True
-            _processingThread = New Thread(AddressOf ProcessingLoop)
+            Try
+                _processingCts?.Dispose()
+            Catch
+            End Try
+
+            _processingCts = New CancellationTokenSource()
+
+            _processingThread = New Thread(Sub() ProcessingLoop(_processingCts.Token))
             _processingThread.IsBackground = True
             _processingThread.Name = "SerialPort_Processing"
             _processingThread.Start()
@@ -367,33 +377,42 @@ Namespace Services
 
             Try
                 _processingCts.Cancel()
+                _bufferSignal.Set()
                 If _processingThread IsNot Nothing AndAlso _processingThread.IsAlive Then
                     _processingThread.Join(1000)
                 End If
             Catch ex As Exception
                 Debug.WriteLine($"StopProcessingThread error: {ex.Message}")
+            Finally
+                _processingThread = Nothing
             End Try
         End Sub
 
         ''' <summary>
         ''' Buffer işleme döngüsü
         ''' </summary>
-        Private Sub ProcessingLoop()
-            While _isProcessing AndAlso Not _processingCts.Token.IsCancellationRequested
+        Private Sub ProcessingLoop(token As CancellationToken)
+            While _isProcessing AndAlso Not token.IsCancellationRequested
                 Try
                     Dim line As String = Nothing
+                    Dim hasWork As Boolean = False
                     While _receiveBuffer.TryDequeue(line)
+                        hasWork = True
                         If Not String.IsNullOrWhiteSpace(line) Then
                             RaiseDataReceived(line)
                         End If
                     End While
+                    If Not hasWork Then
+                        WaitHandle.WaitAny(New WaitHandle() {token.WaitHandle, _bufferSignal}, 25)
+                    End If
 
-                    ' CPU kullanımını azalt
-                    Thread.Sleep(1)
-
+                Catch ex As OperationCanceledException
+                    Exit While
+                Catch ex As ObjectDisposedException
+                    Exit While
                 Catch ex As Exception
                     Debug.WriteLine($"ProcessingLoop error: {ex.Message}")
-                    Thread.Sleep(100)
+                    Thread.Sleep(50)
                 End Try
             End While
         End Sub
@@ -546,6 +565,12 @@ Namespace Services
             Try
                 _processingCts.Cancel()
                 _processingCts.Dispose()
+            Catch
+            End Try
+
+            Try
+                _bufferSignal.Set()
+                _bufferSignal.Dispose()
             Catch
             End Try
         End Sub
