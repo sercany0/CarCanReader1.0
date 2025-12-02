@@ -135,11 +135,29 @@
     <!-- Models -->
     <Compile Include="Models\CANFrame.vb" />
     <!-- Services -->
+    <Compile Include="Services\Interfaces\ICommandsProvider.vb" />
+    <Compile Include="Services\Interfaces\IConfigProvider.vb" />
+    <Compile Include="Services\Interfaces\IEventAggregator.vb" />
+    <Compile Include="Services\Interfaces\ICommandPipeline.vb" />
+    <Compile Include="Services\Interfaces\ICommandPipelineStep.vb" />
+    <Compile Include="Services\Interfaces\ICommandPlugin.vb" />
+    <Compile Include="Services\Providers\FileCommandsProvider.vb" />
+    <Compile Include="Services\Providers\FileConfigProvider.vb" />
+    <Compile Include="Services\Providers\InMemoryCommandsProvider.vb" />
+    <Compile Include="Services\Providers\InMemoryConfigProvider.vb" />
+    <Compile Include="Services\Plugins\CommandEnvelope.vb" />
+    <Compile Include="Services\Plugins\CommandPipeline.vb" />
+    <Compile Include="Services\Plugins\CommandPipelineResult.vb" />
+    <Compile Include="Services\Plugins\CommandPluginLoader.vb" />
+    <Compile Include="Services\Plugins\PluginMetadata.vb" />
+    <Compile Include="Services\Plugins\InMemoryEventAggregator.vb" />
     <Compile Include="Services\CANParser.vb" />
+    <Compile Include="Services\Interfaces\ICanSender.vb" />
     <Compile Include="Services\CANSender.vb" />
     <Compile Include="Services\FilterManager.vb" />
     <Compile Include="Services\DashboardManager.vb" />
     <Compile Include="Services\LearningEngine.vb" />
+    <Compile Include="Services\Interfaces\ICommandRepository.vb" />
     <Compile Include="Services\CommandRepository.vb" />
     <Compile Include="Services\CodingEngine.vb" />
     <Compile Include="Services\LogAnalyzer.vb" />
@@ -166,6 +184,8 @@
     <Compile Include="Services\VehicleProfileManager.vb" />
     <Compile Include="Services\ThreadSafetyHelper.vb" />
     <Compile Include="Services\SerialPortManager.vb" />
+    <Compile Include="Services\Interfaces\IConfigManager.vb" />
+    <Compile Include="Services\Interfaces\ISerialPortManager.vb" />
     <Compile Include="Services\ErrorHandler.vb" />
     <Compile Include="Services\ConfigManager.vb" />
     <Compile Include="Services\DTCDatabase.vb" />
@@ -234,6 +254,7 @@
     <None Include="docs\architecture.md" />
     <None Include="docs\coding-system.md" />
     <None Include="docs\commands-json-format.md" />
+    <None Include="docs\phase7-plugin-architecture.md" />
     <None Include="docs\filter-system.md" />
     <None Include="docs\learning-engine.md" />
     <None Include="docs\services-overview.md" />
