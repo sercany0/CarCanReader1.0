@@ -137,20 +137,26 @@
     <!-- Services -->
     <Compile Include="Services\Interfaces\ICommandsProvider.vb" />
     <Compile Include="Services\Interfaces\IConfigProvider.vb" />
-    <Compile Include="Services\Interfaces\IEventAggregator.vb" />
-    <Compile Include="Services\Interfaces\ICommandPipeline.vb" />
-    <Compile Include="Services\Interfaces\ICommandPipelineStep.vb" />
-    <Compile Include="Services\Interfaces\ICommandPlugin.vb" />
-    <Compile Include="Services\Providers\FileCommandsProvider.vb" />
-    <Compile Include="Services\Providers\FileConfigProvider.vb" />
-    <Compile Include="Services\Providers\InMemoryCommandsProvider.vb" />
-    <Compile Include="Services\Providers\InMemoryConfigProvider.vb" />
-    <Compile Include="Services\Plugins\CommandEnvelope.vb" />
-    <Compile Include="Services\Plugins\CommandPipeline.vb" />
-    <Compile Include="Services\Plugins\CommandPipelineResult.vb" />
-    <Compile Include="Services\Plugins\CommandPluginLoader.vb" />
-    <Compile Include="Services\Plugins\PluginMetadata.vb" />
-    <Compile Include="Services\Plugins\InMemoryEventAggregator.vb" />
+<Compile Include="Services\Interfaces\ICommandsProvider.vb" />
+<Compile Include="Services\Interfaces\IConfigProvider.vb" />
+<Compile Include="Services\Interfaces\IEventAggregator.vb" />
+<Compile Include="Services\Interfaces\ICommandPipeline.vb" />
+<Compile Include="Services\Interfaces\ICommandPipelineStep.vb" />
+<Compile Include="Services\Interfaces\ICommandPlugin.vb" />
+
+<Compile Include="Services\Providers\FileCommandsProvider.vb" />
+<Compile Include="Services\Providers\FileConfigProvider.vb" />
+<Compile Include="Services\Providers\InMemoryCommandsProvider.vb" />
+<Compile Include="Services\Providers\InMemoryConfigProvider.vb" />
+
+<Compile Include="Services\Plugins\CommandEnvelope.vb" />
+<Compile Include="Services\Plugins\CommandPipeline.vb" />
+<Compile Include="Services\Plugins\CommandPipelineResult.vb" />
+<Compile Include="Services\Plugins\CommandPluginLoader.vb" />
+<Compile Include="Services\Plugins\PluginMetadata.vb" />
+<Compile Include="Services\Plugins\InMemoryEventAggregator.vb" />
+
+  
     <Compile Include="Services\CANParser.vb" />
     <Compile Include="Services\Interfaces\ICanSender.vb" />
     <Compile Include="Services\CANSender.vb" />
