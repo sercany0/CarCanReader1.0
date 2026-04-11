@@ -86,13 +86,13 @@ Public Class FilterManager
     Private _currentMode As FilterMode = FilterMode.None
 
     ' Tek ID filtreleme için ID değeri
-    Private _filterId As Integer = -1
-
-    ' Aralık filtreleme için başlangıç ID
     Private _filterFromId As Integer = -1
 
-    ' Aralık filtreleme için bitiş ID
+    ' Aralık filtreleme için başlangıç ID
     Private _filterToId As Integer = -1
+
+    ' Aralık filtreleme için bitiş ID
+    Private _filterId As Integer = -1
 
 #End Region
 
@@ -121,7 +121,7 @@ Public Class FilterManager
     ''' </summary>
     Public ReadOnly Property FilteredId As Integer
         Get
-            Return _filterId
+            Return _filterFromId
         End Get
     End Property
 
@@ -130,7 +130,7 @@ Public Class FilterManager
     ''' </summary>
     Public ReadOnly Property RangeFromId As Integer
         Get
-            Return _filterFromId
+            Return _filterToId
         End Get
     End Property
 
@@ -139,7 +139,7 @@ Public Class FilterManager
     ''' </summary>
     Public ReadOnly Property RangeToId As Integer
         Get
-            Return _filterToId
+            Return _filterId
         End Get
     End Property
 
@@ -167,9 +167,9 @@ Public Class FilterManager
 
         ' Filtre değerlerini ayarla
         _currentMode = mode
-        _filterId = id
-        _filterFromId = -1
+        _filterFromId = id
         _filterToId = -1
+        _filterId = -1
         _isEnabled = True
 
         ' Olayı tetikle
@@ -208,9 +208,9 @@ Public Class FilterManager
 
         ' Filtre değerlerini ayarla
         _currentMode = mode
-        _filterId = -1
-        _filterFromId = fromId
-        _filterToId = toId
+        _filterFromId = -1
+        _filterToId = fromId
+        _filterId = toId
         _isEnabled = True
 
         ' Olayı tetikle
@@ -223,9 +223,9 @@ Public Class FilterManager
     Public Sub ClearFilter()
         _isEnabled = False
         _currentMode = FilterMode.None
-        _filterId = -1
         _filterFromId = -1
         _filterToId = -1
+        _filterId = -1
 
         ' Olayları tetikle
         RaiseEvent OnFilterCleared()
@@ -273,19 +273,19 @@ Public Class FilterManager
 
             Case FilterMode.ShowOnlyId
                 ' Sadece bu ID gösterilir
-                Return (id = _filterId)
+                Return (id = _filterFromId)
 
             Case FilterMode.HideId
                 ' Bu ID gizlenir, diğerleri gösterilir
-                Return (id <> _filterId)
+                Return (id <> _filterFromId)
 
             Case FilterMode.ShowRange
                 ' Sadece aralıktaki ID'ler gösterilir
-                Return (id >= _filterFromId AndAlso id <= _filterToId)
+                Return (id >= _filterToId AndAlso id <= _filterId)
 
             Case FilterMode.HideRange
                 ' Aralıktaki ID'ler gizlenir, diğerleri gösterilir
-                Return (id < _filterFromId OrElse id > _filterToId)
+                Return (id < _filterToId OrElse id > _filterId)
 
             Case Else
                 ' Bilinmeyen mod, güvenli tarafta kal ve göster
@@ -340,16 +340,16 @@ Public Class FilterManager
         Select Case _currentMode
 
             Case FilterMode.ShowOnlyId
-                Return $"Sadece ID 0x{_filterId:X3} gösteriliyor"
+                Return $"Sadece ID 0x{_filterFromId:X3} gösteriliyor"
 
             Case FilterMode.HideId
-                Return $"ID 0x{_filterId:X3} gizleniyor"
+                Return $"ID 0x{_filterFromId:X3} gizleniyor"
 
             Case FilterMode.ShowRange
-                Return $"Sadece 0x{_filterFromId:X3} - 0x{_filterToId:X3} aralığı gösteriliyor"
+                Return $"Sadece 0x{_filterToId:X3} - 0x{_filterId:X3} aralığı gösteriliyor"
 
             Case FilterMode.HideRange
-                Return $"0x{_filterFromId:X3} - 0x{_filterToId:X3} aralığı gizleniyor"
+                Return $"0x{_filterToId:X3} - 0x{_filterId:X3} aralığı gizleniyor"
 
             Case Else
                 Return "Filtre aktif"
